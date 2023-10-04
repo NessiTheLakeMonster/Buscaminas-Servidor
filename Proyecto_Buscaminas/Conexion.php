@@ -1,16 +1,17 @@
 <?php
 
-require __DIR__ . 'Partida.php';
+require 'Partida.php'; 
+require 'Constantes.php';
 
 class Conexion
 {
 
     static $conexion;
 
-    private static function conectar()
+    public static function conectar()
     {
         try {
-            $conexion = new mysqli(
+            self::$conexion = new mysqli(
                 Constantes::$host,
                 Constantes::$user,
                 Constantes::$psswd,
@@ -21,9 +22,9 @@ class Conexion
             die();
         }
 
-        echo $conexion->host_info . "<br>";
+        echo self::$conexion->host_info . "<br>";
 
-        return $conexion;
+        return self::$conexion;
     }
 
     private static function desconectar()
@@ -33,7 +34,7 @@ class Conexion
 
     public static function insertarPartida($partida)
     {
-        self::$conexion->conectar();
+        self::conectar();
         $correcto = false;
 
         if (!self::$conexion) {
@@ -73,7 +74,7 @@ class Conexion
 
     public static function seleccionarPartida($id)
     {
-        self::$conexion->conectar();
+        self::conectar();
 
         if (!self::$conexion) {
             die();
@@ -86,7 +87,7 @@ class Conexion
 
     public static function seleccionarTodasPartidas()
     {
-        self::$conexion->conectar();
+        self::conectar();
 
         if (!self::$conexion) {
             die();
