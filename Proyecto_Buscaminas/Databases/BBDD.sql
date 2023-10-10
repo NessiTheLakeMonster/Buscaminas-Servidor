@@ -16,3 +16,5 @@ CREATE TABLE `buscaminas`.`persona` (
     `partidasGanadas` INT(3) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
+
+/* Crea en la tabla persona un rol para ver si es admin o usuario normal */

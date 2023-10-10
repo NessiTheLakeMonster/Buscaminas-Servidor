@@ -1,6 +1,6 @@
 <?php
 
-require 'Partida.php'; 
+require 'Partida.php';
 require 'Constantes.php';
 
 class Conexion
@@ -62,6 +62,7 @@ class Conexion
             $correcto_query = mysqli_stmt_get_result($stmt);
 
             while ($fila = mysqli_fetch_array($correcto_query)) {
+                
             }
         }
     }
@@ -106,13 +107,34 @@ class Conexion
         return $correcto;
     }
 
-    public static function eliminarPartida($id) {
-
+    public static function eliminarPartida($id)
+    {
     }
 
     /* ---------------------- CRUD TABLA PERSONA ------------------------------------ */
 
+    public static function seleccionarTodasPersonas()
+    {
+        self::conectar();
+
+        if (!self::$conexion) {
+            die();
+        } else {
+            $query = Constantes::$selectPersona;
+            $stmt = self::$conexion;
+
+            $stmt->execute();
+            $correcto = [];
+            $correcto_query = mysqli_stmt_get_result($stmt);
+
+            while ($fila = mysqli_fetch_array($correcto_query)) {
+
+            }
+        }
+    }
+
     public static function seleccionarPersona($mail, $passwd)
     {
+        self::conectar();
     }
 }
