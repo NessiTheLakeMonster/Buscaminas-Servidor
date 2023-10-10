@@ -180,6 +180,18 @@ class Conexion
 
     /* ---------------------- CRUD TABLA PERSONA ------------------------------------ */
 
+    public static function seleccionarPersona($mail, $passwd)
+    {
+        self::conectar();
+
+        if (!self::$conexion) {
+            die();
+        } else {
+            $query = Constantes::$selectPersonaByID;
+            $stmt = self::$conexion->prepare($query);
+        }
+    }
+    
     public static function seleccionarTodasPersonas()
     {
         self::conectar();
@@ -199,15 +211,5 @@ class Conexion
         }
     }
 
-    public static function seleccionarPersona($mail, $passwd)
-    {
-        self::conectar();
-
-        if (!self::$conexion) {
-            die();
-        } else {
-            $query = Constantes::$selectPersonaByID;
-            $stmt = self::$conexion->prepare($query);
-        }
-    }
+    
 }
