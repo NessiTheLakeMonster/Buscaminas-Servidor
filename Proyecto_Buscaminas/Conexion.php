@@ -1,10 +1,13 @@
 <?php
 
+require 'Persona.php';
 require 'Partida.php';
 require 'Constantes.php';
 
 class Conexion
 {
+
+    /* ---------------------- FUNCIONES DE CONEXION ------------------------------------ */
 
     static $conexion;
 
@@ -34,7 +37,7 @@ class Conexion
 
     /* ---------------------- CRUD TABLA PARTIDA ------------------------------------ */
 
-    public static function seleccionarPartida($id)
+    public static function seleccionarPartida($idPart)
     {
         self::conectar();
 
@@ -43,8 +46,34 @@ class Conexion
         } else {
             $query = Constantes::$selecPartidaByID;
             $stmt = self::$conexion->prepare($query);
-            //$id =
+            $stmt->bind_param("i", $idPart);
+
+            try {
+                $stmt->execute();
+                mysqli_fetch_array($stmt);
+
+                $correcto = [];
+                $correcto_query = mysqli_stmt_get_result($stmt);
+
+                while ($fila = mysqli_fetch_array($correcto_query)) {
+                    $part = new Partida(
+                        $fila["idPartida"],
+                        $fila["idUsuario"],
+                        $fila["tableroOculto"],
+                        $fila["tableroJugador"],
+                        $fila["finalizado"]
+                    );
+
+                    $correcto = $part;
+                }
+            } catch (Exception $e) {
+                echo 'No se pudo selecionar' . $e->getMessage();
+                $correcto = false;
+            }
         }
+
+        self::desconectar();
+        return $correcto;
     }
 
     public static function seleccionarTodasPartidas()
@@ -57,14 +86,30 @@ class Conexion
             $query = Constantes::$selecPartida;
             $stmt = self::$conexion->prepare($query);
 
-            $stmt->execute();
-            $correcto = [];
-            $correcto_query = mysqli_stmt_get_result($stmt);
+            try {
+                $stmt->execute();
+                $correcto = [];
+                $correcto_query = mysqli_stmt_get_result($stmt);
 
-            while ($fila = mysqli_fetch_array($correcto_query)) {
-                
+                while ($fila = mysqli_fetch_array($correcto_query)) {
+                    $partida = new Partida(
+                        $fila['idPartida'],
+                        $fila['idUsuario'],
+                        $fila['tableroOculto'],
+                        $fila['tableroJugador'],
+                        $fila['finalizado']
+                    );
+
+                    array_push($correcto, $partida);
+                }
+            } catch (Exception $e) {
+                echo 'No se pudo selecionar' . $e->getMessage();
+                $correcto = false;
             }
         }
+
+        self::desconectar();
+        return $correcto;
     }
 
     public static function insertarPartida($partida)
@@ -107,8 +152,30 @@ class Conexion
         return $correcto;
     }
 
-    public static function eliminarPartida($id)
+    public static function eliminarPartida($idPart)
     {
+        self::conectar();
+        $correcto = false;
+
+        if (!self::$conexion) {
+            die();
+        } else {
+            $query = Constantes::$deletePartidaByID;
+            $stmt = self::$conexion->prepare($query);
+
+            $stmt->bind_param("i", $idPart);
+
+            try {
+                if ($stmt->execute()) {
+                    $correcto = true;
+                }
+            } catch (Exception $e) {
+                $correcto = false;
+            }
+
+            self::desconectar();
+        }
+        return $correcto;
     }
 
     /* ---------------------- CRUD TABLA PERSONA ------------------------------------ */
@@ -128,7 +195,6 @@ class Conexion
             $correcto_query = mysqli_stmt_get_result($stmt);
 
             while ($fila = mysqli_fetch_array($correcto_query)) {
-
             }
         }
     }
@@ -136,5 +202,12 @@ class Conexion
     public static function seleccionarPersona($mail, $passwd)
     {
         self::conectar();
+
+        if (!self::$conexion) {
+            die();
+        } else {
+            $query = Constantes::$selectPersonaByID;
+            $stmt = self::$conexion->prepare($query);
+        }
     }
 }
