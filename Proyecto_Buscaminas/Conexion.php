@@ -32,6 +32,40 @@ class Conexion
         self::$conexion->close();
     }
 
+    /* ---------------------- CRUD TABLA PARTIDA ------------------------------------ */
+
+    public static function seleccionarPartida($id)
+    {
+        self::conectar();
+
+        if (!self::$conexion) {
+            die();
+        } else {
+            $query = Constantes::$selecPartidaByID;
+            $stmt = self::$conexion->prepare($query);
+            //$id =
+        }
+    }
+
+    public static function seleccionarTodasPartidas()
+    {
+        self::conectar();
+
+        if (!self::$conexion) {
+            die();
+        } else {
+            $query = Constantes::$selecPartida;
+            $stmt = self::$conexion->prepare($query);
+
+            $stmt->execute();
+            $correcto = [];
+            $correcto_query = mysqli_stmt_get_result($stmt);
+
+            while ($fila = mysqli_fetch_array($correcto_query)) {
+            }
+        }
+    }
+
     public static function insertarPartida($partida)
     {
         self::conectar();
@@ -40,7 +74,7 @@ class Conexion
         if (!self::$conexion) {
             die();
         } else {
-            $query = "INSERT INTO partida VALUES(?,?,?,?,?)";
+            $query = Constantes::$insertPartida;
             $stmt = self::$conexion->prepare($query);
 
             $idPartida = $partida->getIDPartida();
@@ -72,37 +106,11 @@ class Conexion
         return $correcto;
     }
 
-    public static function seleccionarPartida($id)
-    {
-        self::conectar();
+    public static function eliminarPartida($id) {
 
-        if (!self::$conexion) {
-            die();
-        } else {
-            $query = "SELECT * FROM partida WHERE idPartida = ?";
-            $stmt = self::$conexion->prepare($query);
-            //$id =
-        }
     }
 
-    public static function seleccionarTodasPartidas()
-    {
-        self::conectar();
-
-        if (!self::$conexion) {
-            die();
-        } else {
-            $query = "SELECT * FROM partida";
-            $stmt = self::$conexion->prepare($query);
-
-            $stmt->execute();
-            $correcto = [];
-            $correcto_query = mysqli_stmt_get_result($stmt);
-
-            while ($fila = mysqli_fetch_array($correcto_query)) {
-            }
-        }
-    }
+    /* ---------------------- CRUD TABLA PERSONA ------------------------------------ */
 
     public static function seleccionarPersona($mail, $passwd)
     {
