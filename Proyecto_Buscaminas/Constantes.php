@@ -17,6 +17,7 @@ class Constantes
     static $insertPartida = "INSERT INTO partida VALUES(?,?,?,?,?)";
     static $selecPartidaByID = "SELECT * FROM partida WHERE idPartida = ?";
     static $selecPartida = "SELECT * FROM partida";
+    static $deletePartidaByID = "DELETE * FROM partida WHERE idPartida = ?";
 
     static $selectPersona = "SELECT * FROM persona";
     static $selectPersonaByID = "SELECT * FROM persona WHERE idUsuario = ?";
