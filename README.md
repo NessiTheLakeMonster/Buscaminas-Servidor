@@ -2,7 +2,6 @@
 
 
 <a href="https://www.php.net" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/php/php-original.svg" alt="php" width="40" height="40"/> </a> 
- <a href="https://laravel.com/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/laravel/laravel-plain-wordmark.svg" alt="laravel" width="40" height="40"/> </a>
  Desafío de Buscaminas realizado durante la asignatura de Desarrollo Web Entorno Servidor
 
 # Manual para el usuario :computer:
@@ -18,7 +17,15 @@ php -S 127.0.0.1:9090
 + Creación de usuarios
 + Iniciar sesión con tu usuario
 
+#### Archivo JSON
+```json
+{
+    "idUsuario" : 1,
+    "idParttida" : 101
+}
+```
 
+****
 # Manual para el administrador :closed_lock_with_key:
 
 # Enunciado :books:

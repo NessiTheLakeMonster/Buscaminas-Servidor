@@ -14,6 +14,8 @@ unset($argus[0]);
 
 Conexion::conectar();
 
+Conexion::seleccionarPartida(1);
+
 if ($requestMethod == 'GET') {
     if ($argus[1] == '') {
         Controlador::allPartidas();
