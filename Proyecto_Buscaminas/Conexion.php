@@ -50,9 +50,6 @@ class Conexion
 
             try {
                 $stmt->execute();
-                /* mysqli_fetch_array($stmt); */
-                /* self::$conexion -> fetch_array($stmt); */
-
                 $result = $stmt -> get_result();
 
                 $correcto = [];
@@ -195,12 +192,11 @@ class Conexion
 
             try {
                 $stmt->execute();
-                mysqli_fetch_array($stmt);
+                $result = $stmt -> get_result();
 
                 $correcto = [];
-                $correcto_query = mysqli_stmt_get_result($stmt);
 
-                while ($fila = mysqli_fetch_array($correcto_query)) {
+                while ($fila = $result -> fetch_array()) {
                     // Crear el objeto persona
                 }
             } catch (Exception $e) {
