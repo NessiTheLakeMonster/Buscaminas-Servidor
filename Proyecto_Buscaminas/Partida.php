@@ -1,63 +1,50 @@
 <?php
 
-class Partida {
-    public $idPartida;
-    public $idUsuario;
+class Partida
+{
     public $tableroOculto;
     public $tableroJugador;
     public $finalizado;
 
-    public function __construct($idP, $idU, $tabO, $tabJ, $fin)
+    public function __construct($tabO, $tabJ, $fin)
     {
-        $this-> idPartida = $idP;
-        $this-> idUsuario = $idU;
-        $this-> tableroOculto = $tabO;
-        $this-> tableroJugador = $tabJ;
-        $this-> finalizado = $fin;
+        $this->tableroOculto = $tabO;
+        $this->tableroJugador = $tabJ;
+        $this->finalizado = $fin;
     }
 
     // Getters and Setters -------------------------------------
 
-    public function getIdPartida() {
-        return $this-> idPartida;
+    public function getTableroOculto()
+    {
+        return $this->tableroOculto;
     }
 
-    public function setIdPartida($idP) {
-        $this-> idPartida = $idP;
+    public function setTableroOculto($tabO)
+    {
+        $this->tableroOculto = $tabO;
     }
 
-    public function getIdUsuario() {
-        return $this-> idUsuario;
+    public function getTableroJugador()
+    {
+        return $this->tableroJugador;
     }
 
-    public function setIdUsuario($idU) {
-        $this-> idUsuario = $idU;
+    public function setTableroJugador($tabJ)
+    {
+        $this->tableroJugador = $tabJ;
     }
 
-    public function getTableroOculto() {
-        return $this-> tableroOculto;
+    public function getFinalizado()
+    {
+        return $this->finalizado;
     }
 
-    public function setTableroOculto($tabO) {
-        $this-> tableroOculto = $tabO;
-    }
-
-    public function getTableroJugador() {
-        return $this-> tableroJugador;
-    }
-
-    public function setTableroJugador($tabJ) {
-        $this-> tableroJugador = $tabJ;
-    }
-
-    public function getFinalizado() {
-        return $this-> finalizado;
-    }
-
-    public function setFinalizado($fin) {
-        $this-> finalizado = $fin;
+    public function setFinalizado($fin)
+    {
+        $this->finalizado = $fin;
     }
 
     // -----------------------------------------------------------
-    
+
 }

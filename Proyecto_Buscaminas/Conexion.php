@@ -121,19 +121,16 @@ class Conexion
             $query = Constantes::$insertPartida;
             $stmt = self::$conexion->prepare($query);
 
-            $idPartida = $partida->getIDPartida();
-            $idUsuario = $partida->getIdUsuario();
             $tableroOculto = $partida->getTableroOculto();
             $tableroJugador = $partida->getTableroJugador();
             $finalizado = $partida->getFinalizado();
 
             $stmt->bind_param(
-                "iissb",
-                $idPartida,
-                $idUsuario,
-                $tableroOculto,
-                $tableroJugador,
-                $finalizado
+                Factoria::crearPartida(
+                    $tableroOculto,
+                    $tableroJugador,
+                    $finalizado
+                )
             );
 
             try {
@@ -214,7 +211,7 @@ class Conexion
             die();
         } else {
             $query = Constantes::$selectPersona;
-            $stmt = self::$conexion;
+            $stmt = self::$conexion -> prepare($query);
 
             try {
                 $stmt->execute();
@@ -246,10 +243,22 @@ class Conexion
             $query = Constantes::$insertPersona;
             $stmt = self::$conexion->prepare($query);
 
-            // Propiedades persona
+            $pass = $persona -> getPassword();
+            $nom = $persona -> getNombre();
+            $em = $persona -> getEmail();
+            $partJ = $persona -> getPartidasJugadas();
+            $partG = $persona -> getPartidasGanadas();
+            $adm = $persona -> getAdmin();
 
             $stmt->bind_param(
-                // añade atributos
+                $persona = Factoria::crearPersona(
+                    $pass,
+                    $nom,
+                    $em,
+                    $partJ,
+                    $partG,
+                    $adm
+                )
             );
 
             try {

@@ -1,7 +1,7 @@
 <?php
 
-class Persona {
-    public $idUsuario;
+class Persona
+{
     public $password;
     public $nombre;
     public $email;
@@ -9,72 +9,75 @@ class Persona {
     public $partidasGanadas;
     public $admin;
 
-    public function __construct($idU, $pass, $nom, $em, $partJ, $partG, $adm)
+    public function __construct($pass, $nom, $em, $partJ, $partG, $adm)
     {
-        $this-> idUsuario = $idU;
-        $this-> password = $pass;
-        $this-> nombre = $nom;
-        $this-> email = $em;
-        $this-> partidasJugadas = $partJ;
-        $this-> partidasGanadas = $partG;
-        $this-> admin = $adm;
+        $this->password = $pass;
+        $this->nombre = $nom;
+        $this->email = $em;
+        $this->partidasJugadas = $partJ;
+        $this->partidasGanadas = $partG;
+        $this->admin = $adm;
     }
-    
+
     // Getters and Setters -------------------------------------
 
-    public function getIdUsuario() {
-        return $this-> idUsuario;
+    public function getPassword()
+    {
+        return $this->password;
     }
 
-    public function setIdUsuario($idU) {
-        $this-> idUsuario = $idU;
+    public function setPassword($pass)
+    {
+        $this->password = $pass;
     }
 
-    public function getPassword() {
-        return $this-> password;
+    public function getNombre()
+    {
+        return $this->nombre;
     }
 
-    public function setPassword($pass) {
-        $this-> password = $pass;
+    public function setNombre($nom)
+    {
+        $this->nombre = $nom;
     }
 
-    public function getNombre() {
-        return $this-> nombre;
+    public function getEmail()
+    {
+        return $this->email;
     }
 
-    public function setNombre($nom) {
-        $this-> nombre = $nom;
+    public function setEmail($em)
+    {
+        $this->email = $em;
     }
 
-    public function getEmail() {
-        return $this-> email;
+    public function getPartidasJugadas()
+    {
+        return $this->partidasJugadas;
     }
 
-    public function setEmail($em) {
-        $this-> email = $em;
+    public function setPartidasJugadas($partJ)
+    {
+        $this->partidasJugadas = $partJ;
     }
 
-    public function getPartidasJugadas() {
-        return $this-> partidasJugadas;
+    public function getPartidasGanadas()
+    {
+        return $this->partidasGanadas;
     }
 
-    public function setPartidasJugadas($partJ) {
-        $this-> partidasJugadas = $partJ;
+    public function setPartidasGanadas($partG)
+    {
+        $this->partidasGanadas = $partG;
     }
 
-    public function getPartidasGanadas() {
-        return $this-> partidasGanadas;
+    public function getAdmin()
+    {
+        return $this->admin;
     }
 
-    public function setPartidasGanadas($partG) {
-        $this-> partidasGanadas = $partG;
-    }
-
-    public function getAdmin() {
-        return $this-> admin;
-    }
-
-    public function setAdmin($adm) {
-        $this-> admin = $adm;
+    public function setAdmin($adm)
+    {
+        $this->admin = $adm;
     }
 }
