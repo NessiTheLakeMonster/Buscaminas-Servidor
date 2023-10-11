@@ -50,12 +50,13 @@ class Conexion
 
             try {
                 $stmt->execute();
-                mysqli_fetch_array($stmt);
+                /* mysqli_fetch_array($stmt); */
+                /* self::$conexion -> fetch_array($stmt); */
+
+                $result = $stmt -> get_result();
 
                 $correcto = [];
-                $correcto_query = mysqli_stmt_get_result($stmt);
-
-                while ($fila = mysqli_fetch_array($correcto_query)) {
+                while ($fila = $result -> fetch_array()) {
                     $part = new Partida(
                         $fila["idPartida"],
                         $fila["idUsuario"],
@@ -66,6 +67,7 @@ class Conexion
 
                     $correcto = $part;
                 }
+
             } catch (Exception $e) {
                 echo 'No se pudo selecionar' . $e->getMessage();
                 $correcto = false;
@@ -180,7 +182,7 @@ class Conexion
 
     /* ---------------------- CRUD TABLA PERSONA ------------------------------------ */
 
-    public static function seleccionarPersona($mail, $passwd)
+    public static function seleccionarPersona($idPers)
     {
         self::conectar();
 
@@ -189,9 +191,28 @@ class Conexion
         } else {
             $query = Constantes::$selectPersonaByID;
             $stmt = self::$conexion->prepare($query);
+            $stmt->bind_param("i", $idPers);
+
+            try {
+                $stmt->execute();
+                mysqli_fetch_array($stmt);
+
+                $correcto = [];
+                $correcto_query = mysqli_stmt_get_result($stmt);
+
+                while ($fila = mysqli_fetch_array($correcto_query)) {
+                    // Crear el objeto persona
+                }
+            } catch (Exception $e) {
+                echo 'No se pudo selecionar' . $e->getMessage();
+                $correcto = false;
+            }
         }
+
+        self::desconectar();
+        return $correcto;
     }
-    
+
     public static function seleccionarTodasPersonas()
     {
         self::conectar();
@@ -211,5 +232,13 @@ class Conexion
         }
     }
 
-    
+    public static function insertarPersona()
+    {
+        self::conectar();
+    }
+
+    public static function deletePersona()
+    {
+        self::conectar();
+    }
 }
