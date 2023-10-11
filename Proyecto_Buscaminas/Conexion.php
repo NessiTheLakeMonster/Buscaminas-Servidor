@@ -50,10 +50,10 @@ class Conexion
 
             try {
                 $stmt->execute();
-                $result = $stmt -> get_result();
+                $result = $stmt->get_result();
 
                 $correcto = [];
-                while ($fila = $result -> fetch_array()) {
+                while ($fila = $result->fetch_array()) {
                     $part = new Partida(
                         $fila["idPartida"],
                         $fila["idUsuario"],
@@ -64,7 +64,6 @@ class Conexion
 
                     $correcto = $part;
                 }
-
             } catch (Exception $e) {
                 echo 'No se pudo selecionar' . $e->getMessage();
                 $correcto = false;
@@ -87,10 +86,10 @@ class Conexion
 
             try {
                 $stmt->execute();
-                $correcto = [];
-                $correcto_query = mysqli_stmt_get_result($stmt);
+                $result = $stmt->get_result();
 
-                while ($fila = mysqli_fetch_array($correcto_query)) {
+                $correcto = [];
+                while ($fila = $result->fetch_array()) {
                     $partida = new Partida(
                         $fila['idPartida'],
                         $fila['idUsuario'],
@@ -144,10 +143,9 @@ class Conexion
             } catch (Exception $e) {
                 $correcto = false;
             }
-
-            self::desconectar();
         }
 
+        self::desconectar();
         return $correcto;
     }
 
@@ -171,9 +169,8 @@ class Conexion
             } catch (Exception $e) {
                 $correcto = false;
             }
-
-            self::desconectar();
         }
+        self::desconectar();
         return $correcto;
     }
 
@@ -192,11 +189,11 @@ class Conexion
 
             try {
                 $stmt->execute();
-                $result = $stmt -> get_result();
+                $result = $stmt->get_result();
 
                 $correcto = [];
 
-                while ($fila = $result -> fetch_array()) {
+                while ($fila = $result->fetch_array()) {
                     // Crear el objeto persona
                 }
             } catch (Exception $e) {
@@ -219,22 +216,79 @@ class Conexion
             $query = Constantes::$selectPersona;
             $stmt = self::$conexion;
 
-            $stmt->execute();
-            $correcto = [];
-            $correcto_query = mysqli_stmt_get_result($stmt);
+            try {
+                $stmt->execute();
+                $result = $stmt->get_result();
 
-            while ($fila = mysqli_fetch_array($correcto_query)) {
+                $correcto = [];
+
+                while ($fila = $result->fetch_array()) {
+                    // Crear el objeto persona
+                }
+            } catch (Exception $e) {
+                echo 'No se pudo selecionar' . $e->getMessage();
+                $correcto = false;
             }
         }
+
+        self::desconectar();
+        return $correcto;
     }
 
-    public static function insertarPersona()
+    public static function insertarPersona($persona)
     {
         self::conectar();
+        $correcto = false;
+
+        if (!self::$conexion) {
+            die();
+        } else {
+            $query = Constantes::$insertPersona;
+            $stmt = self::$conexion->prepare($query);
+
+            // Propiedades persona
+
+            $stmt->bind_param(
+                // añade atributos
+            );
+
+            try {
+                if ($stmt->execute()) {
+                    $correcto = true;
+                }
+            } catch (Exception $e) {
+                $correcto = false;
+            }
+        }
+        self::desconectar();
+        return $correcto;
     }
 
-    public static function deletePersona()
+    public static function deletePersona($idPers)
     {
         self::conectar();
+        $correcto = false;
+
+        if (!self::$conexion) {
+            die();
+        } else {
+            $query = Constantes::$deletePersonaByID;
+            $stmt = self::$conexion->prepare($query);
+
+            $stmt->bind_param(
+                "i",
+                $idPers
+            );
+
+            try {
+                if ($stmt->execute()) {
+                    $correcto = true;
+                }
+            } catch (Exception $e) {
+                $correcto = false;
+            }
+        }
+        self::desconectar();
+        return $correcto;
     }
 }

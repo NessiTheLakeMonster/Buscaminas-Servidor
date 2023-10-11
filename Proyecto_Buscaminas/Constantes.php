@@ -21,4 +21,6 @@ class Constantes
 
     static $selectPersona = "SELECT * FROM persona";
     static $selectPersonaByID = "SELECT * FROM persona WHERE idUsuario = ?";
+    static $insertPersona = "INSERT INTO persona VALUES()";
+    static $deletePersonaByID = "DELETE * FROM persona WHERE idUsuario = ?";
 }
