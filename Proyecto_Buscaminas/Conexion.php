@@ -126,11 +126,10 @@ class Conexion
             $finalizado = $partida->getFinalizado();
 
             $stmt->bind_param(
-                Factoria::crearPartida(
-                    $tableroOculto,
-                    $tableroJugador,
-                    $finalizado
-                )
+                "ssb",
+                $tableroOculto,
+                $tableroJugador,
+                $finalizado
             );
 
             try {
@@ -211,7 +210,7 @@ class Conexion
             die();
         } else {
             $query = Constantes::$selectPersona;
-            $stmt = self::$conexion -> prepare($query);
+            $stmt = self::$conexion->prepare($query);
 
             try {
                 $stmt->execute();
@@ -243,22 +242,21 @@ class Conexion
             $query = Constantes::$insertPersona;
             $stmt = self::$conexion->prepare($query);
 
-            $pass = $persona -> getPassword();
-            $nom = $persona -> getNombre();
-            $em = $persona -> getEmail();
-            $partJ = $persona -> getPartidasJugadas();
-            $partG = $persona -> getPartidasGanadas();
-            $adm = $persona -> getAdmin();
+            $pass = $persona->getPassword();
+            $nom = $persona->getNombre();
+            $em = $persona->getEmail();
+            $partJ = $persona->getPartidasJugadas();
+            $partG = $persona->getPartidasGanadas();
+            $adm = $persona->getAdmin();
 
             $stmt->bind_param(
-                $persona = Factoria::crearPersona(
-                    $pass,
-                    $nom,
-                    $em,
-                    $partJ,
-                    $partG,
-                    $adm
-                )
+                "sssiib",
+                $pass,
+                $nom,
+                $em,
+                $partJ,
+                $partG,
+                $adm
             );
 
             try {

@@ -2,6 +2,7 @@
 
 class Persona
 {
+    public $idUsuario;
     public $password;
     public $nombre;
     public $email;
@@ -9,8 +10,9 @@ class Persona
     public $partidasGanadas;
     public $admin;
 
-    public function __construct($pass, $nom, $em, $partJ, $partG, $adm)
+    public function __construct($idUsu, $pass, $nom, $em, $partJ, $partG, $adm)
     {
+        $this->idUsuario = $idUsu;
         $this->password = $pass;
         $this->nombre = $nom;
         $this->email = $em;
@@ -20,6 +22,16 @@ class Persona
     }
 
     // Getters and Setters -------------------------------------
+
+    public function getIdUsuario()
+    {
+        return $this->idUsuario;
+    }
+
+    public function setIdUsuario($idUsu)
+    {
+        $this->idUsuario = $idUsu;
+    }
 
     public function getPassword()
     {
