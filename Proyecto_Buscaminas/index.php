@@ -1,28 +1,37 @@
 <?php
 
+require_once 'Controlador.php';
+require_once 'Persona.php';
+require_once 'Partida.php';
 require_once 'Conexion.php';
-require_once __DIR__.'/Partida.php';
-require_once __DIR__.'/Controlador.php';
 
 header("Content-Type:application/json");
 $requestMethod = $_SERVER["REQUEST_METHOD"];
 $paths =  $_SERVER['REQUEST_URI'];
-$datosRecibidos = file_get_contents("php://input");
 
 $argus = explode('/', $paths);
 unset($argus[0]);
 
-Conexion::conectar();
+$datosRecibidos = file_get_contents("php://input");
 
-Conexion::seleccionarPartida(1);
-
-if ($requestMethod == 'GET') {
-    if ($argus[1] == '') {
-        Controlador::allPartidas();
-
-
+// Metodos manejados unicamente por el administrador
+if ($argus[1] == 'admin') {
+    if ($requestMethod == 'POST') { // Creación de usuarios con POST
+        $data = json_decode($datosRecibidos, true);
+        Controlador::crearUsuario(new Persona(
+            $data['idUsuario'],
+            $data['password'],
+            $data['nombre'],
+            $data['email'],
+            $data['partidasJugadas'],
+            $data['partidasGanadas'],
+            $data['admin']
+        ));
+    } else if ($requestMethod == 'GET') { // Listar usuarios con GET
+        Controlador::allUsuarios();
+        Controlador::usuarioByID($argus[2]);
     }
 
-} else if ($requestMethod == 'POST') {
-
+    // Metodos para poder jugar
+} else if ($argus[1] == 'jugador') {
 }

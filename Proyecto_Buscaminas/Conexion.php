@@ -1,12 +1,10 @@
 <?php
 
-require 'Persona.php';
-require 'Partida.php';
 require 'Constantes.php';
+require 'Factoria.php';
 
 class Conexion
 {
-
     /* ---------------------- FUNCIONES DE CONEXION ------------------------------------ */
 
     static $conexion;
@@ -219,7 +217,16 @@ class Conexion
                 $correcto = [];
 
                 while ($fila = $result->fetch_array()) {
-                    // Crear el objeto persona
+                    $p = Factoria::crearPersona(
+                        $fila['idUsuario'],
+                        $fila['password'],
+                        $fila['nombre'],
+                        $fila['email'],
+                        $fila['partidasJugadas'],
+                        $fila['partidasGanadas'],
+                        $fila['admin']
+                    );
+                    $correcto = $p;
                 }
             } catch (Exception $e) {
                 echo 'No se pudo selecionar' . $e->getMessage();
