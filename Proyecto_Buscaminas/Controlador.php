@@ -1,13 +1,7 @@
 <?php
 
-require 'Controlador.php';
-require 'Persona.php';
-require 'Partida.php';
-
 class Controlador
 {
-
-    // -------------------- FUNCIONES DE LA PARTIDA ----------------------------
 
     static function crearPartida($p)
     {
@@ -54,21 +48,8 @@ class Controlador
         echo json_encode($respuesta);
     }
 
-    static function partidaByID($idPart)
-    {
-        $partida = Conexion::seleccionarPartida($idPart);
-        $cod = 201;
-        $mes = "TODO OK";
-        header(Constantes::$headerMssg . $cod . ' ' . $mes);
-        $respuesta = [
-            'Cod:' => $cod,
-            'Mensaje:' => $mes,
-            'Partida' => $partida
-        ];
-        echo json_encode($respuesta);
-    }
+    // ------------------------------ FUNCIONES USUARIO ------------------------------
 
-    // -------------------- FUNCIONES DE LA PERSONA ----------------------------
     static function crearUsuario($persJSON)
     {
         $pers = json_decode($persJSON, true);
@@ -83,7 +64,6 @@ class Controlador
             $mes = "ERROR";
         }
 
-        // Send the response
         header(Constantes::$headerMssg . $cod . ' ' . $mes);
         $respuesta = [
             'Cod:' => $cod,
@@ -103,20 +83,6 @@ class Controlador
             'Cod:' => $cod,
             'Mensaje:' => $mes,
             'Personas' => $arrayPersonas
-        ];
-        echo json_encode($respuesta);
-    }
-
-    static function usuarioByID($idUsu)
-    {
-        $persona = Conexion::seleccionarPersona($idUsu);
-        $cod = 201;
-        $mes = "TODO OK";
-        header(Constantes::$headerMssg . $cod . ' ' . $mes);
-        $respuesta = [
-            'Cod:' => $cod,
-            'Mensaje:' => $mes,
-            'Persona' => $persona
         ];
         echo json_encode($respuesta);
     }

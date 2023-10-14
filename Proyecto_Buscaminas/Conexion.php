@@ -20,7 +20,6 @@ class Conexion
             );
         } catch (Exception $e) {
             echo "Fallo al conectar a MySQL: (" . $e->getMessage() . ")";
-            die();
         }
 
         echo self::$conexion->host_info . "<br>";
@@ -40,7 +39,7 @@ class Conexion
         self::conectar();
 
         if (!self::$conexion) {
-            die();
+            echo "Fallo al conectar a MySQL";
         } else {
             $query = Constantes::$selecPartidaByID;
             $stmt = self::$conexion->prepare($query);
@@ -188,7 +187,16 @@ class Conexion
                 $correcto = [];
 
                 while ($fila = $result->fetch_array()) {
-                    // Crear el objeto persona
+                    $p = Factoria::crearPersona(
+                        $fila['idUsuario'],
+                        $fila['password'],
+                        $fila['nombre'],
+                        $fila['email'],
+                        $fila['partidasJugadas'],
+                        $fila['partidasGanadas'],
+                        $fila['admin']
+                    );
+                    $correcto = $p;
                 }
             } catch (Exception $e) {
                 echo 'No se pudo selecionar' . $e->getMessage();

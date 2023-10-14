@@ -1,8 +1,6 @@
 <?php
 
 require_once 'Controlador.php';
-require_once 'Persona.php';
-require_once 'Partida.php';
 require_once 'Conexion.php';
 
 header("Content-Type:application/json");
@@ -13,6 +11,10 @@ $argus = explode('/', $paths);
 unset($argus[0]);
 
 $datosRecibidos = file_get_contents("php://input");
+
+Conexion::conectar();
+
+Conexion::seleccionarPartida(2);
 
 // Metodos manejados unicamente por el administrador
 if ($argus[1] == 'admin') {
@@ -29,7 +31,7 @@ if ($argus[1] == 'admin') {
         ));
     } else if ($requestMethod == 'GET') { // Listar usuarios con GET
         Controlador::allUsuarios();
-        Controlador::usuarioByID($argus[2]);
+        /*Controlador::usuarioByID($argus[2]); */
     }
 
     // Metodos para poder jugar
