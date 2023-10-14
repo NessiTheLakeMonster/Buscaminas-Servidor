@@ -1,7 +1,7 @@
 <?php
 
-require_once 'Controlador.php';
-require_once 'Conexion.php';
+require_once __DIR__ . '/Controllers/Controlador.php';
+require_once __DIR__ . '/Databases/Conexion.php';
 
 header("Content-Type:application/json");
 $requestMethod = $_SERVER["REQUEST_METHOD"];

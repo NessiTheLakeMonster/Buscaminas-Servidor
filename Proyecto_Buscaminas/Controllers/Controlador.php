@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__.'\..\Databases\Conexion.php';
+
 class Controlador
 {
 

@@ -1,7 +1,7 @@
 <?php
 
-require 'Persona.php';
-require 'Partida.php';
+require __DIR__.'\Model\Persona.php';
+require __DIR__.'\Model\Partida.php';
 
 class Factoria {
 
