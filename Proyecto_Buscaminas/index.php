@@ -13,28 +13,43 @@ unset($argus[0]);
 
 // Metodos manejados unicamente por el administrador
 if ($argus[1] == 'admin') {
-    if ($requestMethod == 'POST') { // Creación de usuarios con POST
+    // Metodo login aqui
+    if ($requestMethod == 'POST') {
+
         $data = json_decode($datosRecibidos, true);
 
-        Controlador::crearUsuario(new Persona(
-            $data['idUsuario'],
-            $data['password'],
-            $data['nombre'],
+        $persona = Controlador::login(
             $data['email'],
-            $data['partidasJugadas'],
-            $data['partidasGanadas'],
-            $data['admin']
-        ));
-    } else if ($requestMethod == 'GET') { // Listar usuarios con GET
-        if ($argus[2] == '') {
-            Controlador::allUsuarios();
-        } else {
-            Controlador::usuarioByID($argus[2]);
-        }
-    } else if ($requestMethod == 'DELETE') { // Borrar usuarios con DELETE
-        Controlador::borrarUsuario($argus[2]);
-    }
+            $data['password']
+        );
 
+        if (Controlador::checkAdmin($persona) == false) {
+            echo 'No eres admin';
+        } else {
+            echo 'Eres admin';
+            if ($requestMethod == 'POST') { // Creación de usuarios con POST
+                $data = json_decode($datosRecibidos, true);
+
+                Controlador::crearUsuario(Factoria::crearPersona(
+                    $data['idUsuario'],
+                    $data['password'],
+                    $data['nombre'],
+                    $data['email'],
+                    $data['partidasJugadas'],
+                    $data['partidasGanadas'],
+                    $data['admin']
+                ));
+            } else if ($requestMethod == 'GET') { // Listar usuarios con GET
+                if ($argus[2] == '') {
+                    Controlador::allUsuarios();
+                } else {
+                    Controlador::usuarioByID($argus[2]);
+                }
+            } else if ($requestMethod == 'DELETE') { // Borrar usuarios con DELETE
+                Controlador::borrarUsuario($argus[2]);
+            }
+        }
+    }
     // Metodos para poder jugar
 } else if ($argus[1] == 'jugador') {
 }

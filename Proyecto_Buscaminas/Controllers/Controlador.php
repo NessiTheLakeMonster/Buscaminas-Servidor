@@ -134,4 +134,41 @@ class Controlador
 
         echo json_encode($respuesta);
     }
+
+    // ----------------------- FUNCION DE LOGIN --------------------------
+
+    static function login($email, $passw)
+    {
+        if (Conexion::seleccionarPersona($email, $passw)) {
+            $login = true;
+            $cod = 201;
+            $mes = "TODO OK";
+        } else {
+            $login = false;
+            $cod = 400;
+            $mes = "ERROR";
+        }
+
+        header(Constantes::$headerMssg . $cod . ' ' . $mes);
+        $respuesta = [
+            'Cod:' => $cod,
+            'Mensaje:' => $mes,
+            'Login:' => $login
+        ];
+
+        echo json_encode($respuesta);
+    }
+
+    static function checkAdmin($persona)
+    {
+        $admin = false;
+
+        if ($persona->getAdmin() == 0) { // Si es 0, es admin
+            $admin = true;
+        } else { // Si es 1, no es admin
+            $admin = false;
+        }
+
+        return $admin;
+    }
 }

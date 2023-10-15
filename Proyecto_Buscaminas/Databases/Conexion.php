@@ -76,7 +76,7 @@ class Conexion
         self::conectar();
 
         if (!self::$conexion) {
-            die();
+            echo 'Eror al conectar a MySQL';
         } else {
             $query = Constantes::$selecPartida;
             $stmt = self::$conexion->prepare($query);
@@ -113,7 +113,7 @@ class Conexion
         $correcto = false;
 
         if (!self::$conexion) {
-            die();
+            echo 'Eror al conectar a MySQL';
         } else {
             $query = Constantes::$insertPartida;
             $stmt = self::$conexion->prepare($query);
@@ -148,7 +148,7 @@ class Conexion
         $correcto = false;
 
         if (!self::$conexion) {
-            die();
+            echo 'Eror al conectar a MySQL';
         } else {
             $query = Constantes::$deletePartidaByID;
             $stmt = self::$conexion->prepare($query);
@@ -180,8 +180,52 @@ class Conexion
             $stmt = self::$conexion->prepare($query);
 
             $stmt->bind_param(
-                "i", 
+                "i",
                 $idPers
+            );
+
+            try {
+                $stmt->execute();
+                $result = $stmt->get_result();
+
+                $usuarios = [];
+
+                while ($fila = $result->fetch_array()) {
+                    $p = Factoria::crearPersona(
+                        $fila['idUsuario'],
+                        $fila['password'],
+                        $fila['nombre'],
+                        $fila['email'],
+                        $fila['partidasJugadas'],
+                        $fila['partidasGanadas'],
+                        $fila['admin']
+                    );
+                    $usuarios[] = $p;
+                }
+
+                $result->free_result();
+                return $usuarios;
+            } catch (Exception $e) {
+                echo 'No se pudo selecionar' . $e->getMessage();
+            }
+        }
+        self::desconectar();
+    }
+
+    public static function seleccionarPersonaLogin($mail, $pass)
+    {
+        self::conectar();
+
+        if (!self::$conexion) {
+            echo 'Eror al conectar a MySQL';
+        } else {
+            $query = Constantes::$selectPersonaByEmailPass;
+            $stmt = self::$conexion->prepare($query);
+
+            $stmt->bind_param(
+                "ss",
+                $pass,
+                $mail
             );
 
             try {
