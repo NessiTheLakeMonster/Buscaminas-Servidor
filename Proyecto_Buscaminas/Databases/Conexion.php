@@ -22,7 +22,7 @@ class Conexion
             echo "Fallo al conectar a MySQL: (" . $e->getMessage() . ")";
         }
 
-        echo self::$conexion->host_info . "<br>";
+        /* echo self::$conexion->host_info . "<br>"; */
 
         return self::$conexion;
     }
@@ -174,7 +174,7 @@ class Conexion
         self::conectar();
 
         if (!self::$conexion) {
-            die();
+            /* die(); */
         } else {
             $query = Constantes::$selectPersonaByID;
             $stmt = self::$conexion->prepare($query);
@@ -184,7 +184,7 @@ class Conexion
                 $stmt->execute();
                 $result = $stmt->get_result();
 
-                $correcto = [];
+                $usuarios = [];
 
                 while ($fila = $result->fetch_array()) {
                     $p = Factoria::crearPersona(
@@ -196,16 +196,16 @@ class Conexion
                         $fila['partidasGanadas'],
                         $fila['admin']
                     );
-                    $correcto = $p;
+                    $usuarios = $p;
                 }
+
+                $result->free_result();
+                return $usuarios;
             } catch (Exception $e) {
                 echo 'No se pudo selecionar' . $e->getMessage();
-                $correcto = false;
             }
         }
-
         self::desconectar();
-        return $correcto;
     }
 
     public static function seleccionarTodasPersonas()
@@ -213,7 +213,7 @@ class Conexion
         self::conectar();
 
         if (!self::$conexion) {
-            die();
+            /* die(); */
         } else {
             $query = Constantes::$selectPersona;
             $stmt = self::$conexion->prepare($query);
@@ -222,7 +222,7 @@ class Conexion
                 $stmt->execute();
                 $result = $stmt->get_result();
 
-                $correcto = [];
+                $usuarios = [];
 
                 while ($fila = $result->fetch_array()) {
                     $p = Factoria::crearPersona(
@@ -234,16 +234,17 @@ class Conexion
                         $fila['partidasGanadas'],
                         $fila['admin']
                     );
-                    $correcto = $p;
+                    $usuarios = $p;
                 }
+
+                $result->free_result();
+                return $usuarios;
             } catch (Exception $e) {
                 echo 'No se pudo selecionar' . $e->getMessage();
-                $correcto = false;
             }
         }
 
         self::desconectar();
-        return $correcto;
     }
 
     public static function insertarPersona($persona)

@@ -5,16 +5,11 @@ require_once __DIR__ . '/Databases/Conexion.php';
 
 header("Content-Type:application/json");
 $requestMethod = $_SERVER["REQUEST_METHOD"];
-$paths =  $_SERVER['REQUEST_URI'];
+$paths = $_SERVER['REQUEST_URI'];
+$datosRecibidos = file_get_contents("php://input");
 
 $argus = explode('/', $paths);
 unset($argus[0]);
-
-$datosRecibidos = file_get_contents("php://input");
-
-Conexion::conectar();
-
-Conexion::seleccionarPartida(2);
 
 // Metodos manejados unicamente por el administrador
 if ($argus[1] == 'admin') {
@@ -30,10 +25,12 @@ if ($argus[1] == 'admin') {
             $data['partidasGanadas'],
             $data['admin']
         ));
-        
     } else if ($requestMethod == 'GET') { // Listar usuarios con GET
-        Controlador::allUsuarios();
-        /*Controlador::usuarioByID($argus[2]); */
+        if ($argus[2] == '') {
+            Controlador::allUsuarios();
+        } else {
+            Controlador::usuarioByID($argus[2]);
+        }
     }
 
     // Metodos para poder jugar

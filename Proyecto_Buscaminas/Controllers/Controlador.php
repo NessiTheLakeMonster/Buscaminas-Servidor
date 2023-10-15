@@ -80,10 +80,27 @@ class Controlador
         $cod = 201;
         $mes = "TODO OK";
         header(Constantes::$headerMssg . $cod . ' ' . $mes);
+        header('Content-Type: application/json');
+        
         $respuesta = [
             'Cod:' => $cod,
             'Mensaje:' => $mes,
             'Personas' => $arrayPersonas
+        ];
+        
+        echo json_encode($respuesta);
+    }
+
+    static function usuarioByID($id)
+    {
+        $persona = Conexion::seleccionarPersona($id);
+        $cod = 201;
+        $mes = "TODO OK";
+        header(Constantes::$headerMssg . $cod . ' ' . $mes);
+        $respuesta = [
+            'Cod:' => $cod,
+            'Mensaje:' => $mes,
+            'Persona' => $persona
         ];
         echo json_encode($respuesta);
     }
