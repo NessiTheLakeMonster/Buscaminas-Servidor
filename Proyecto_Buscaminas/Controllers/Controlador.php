@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__.'\..\Databases\Conexion.php';
+require_once __DIR__ . '\..\Databases\Conexion.php';
 
 class Controlador
 {
@@ -76,31 +76,62 @@ class Controlador
 
     static function allUsuarios()
     {
-        $arrayPersonas = Conexion::seleccionarTodasPersonas();
-        $cod = 201;
-        $mes = "TODO OK";
+        if ($arrayPersonas = Conexion::seleccionarTodasPersonas()) {
+            $cod = 201;
+            $mes = "TODO OK";
+        } else {
+            $cod = 400;
+            $mes = "ERROR";
+        }
+
         header(Constantes::$headerMssg . $cod . ' ' . $mes);
-        
         $respuesta = [
             'Cod:' => $cod,
             'Mensaje:' => $mes,
             'Personas' => $arrayPersonas
         ];
-        
+
         echo json_encode($respuesta);
     }
 
     static function usuarioByID($id)
     {
-        $persona = Conexion::seleccionarPersona($id);
-        $cod = 201;
-        $mes = "TODO OK";
+        if ($persona = Conexion::seleccionarPersona($id)) {
+            $cod = 201;
+            $mes = "TODO OK";
+        } else {
+            $cod = 400;
+            $mes = "ERROR";
+        }
+
         header(Constantes::$headerMssg . $cod . ' ' . $mes);
         $respuesta = [
             'Cod:' => $cod,
             'Mensaje:' => $mes,
             'Persona' => $persona
         ];
+        echo json_encode($respuesta);
+    }
+
+    static function borrarUsuario($id)
+    {
+        if (Conexion::deletePersona($id)) {
+            $borrado = true;
+            $cod = 201;
+            $mes = "TODO OK";
+        } else {
+            $borrado = false;
+            $cod = 400;
+            $mes = "ERROR";
+        }
+
+        header(Constantes::$headerMssg . $cod . ' ' . $mes);
+        $respuesta = [
+            'Cod:' => $cod,
+            'Mensaje:' => $mes,
+            'Borrado:' => $borrado
+        ];
+
         echo json_encode($respuesta);
     }
 }

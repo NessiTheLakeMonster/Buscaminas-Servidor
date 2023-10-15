@@ -200,7 +200,7 @@ class Conexion
                         $fila['partidasGanadas'],
                         $fila['admin']
                     );
-                    $usuarios = $p;
+                    $usuarios[] = $p;
                 }
 
                 $result->free_result();
