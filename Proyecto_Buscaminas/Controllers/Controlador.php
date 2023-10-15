@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__.'\..\Databases\Conexion.php';
+
 class Controlador
 {
 
@@ -7,7 +9,7 @@ class Controlador
     {
         if (Conexion::insertarPartida($p)) {
             $insercion = true;
-            
+
             $cod = 201;
             $msg = 'TODO OK';
 
@@ -34,7 +36,8 @@ class Controlador
         }
     }
 
-    static function allPartidas() {
+    static function allPartidas()
+    {
         $arrayPartidas = Conexion::seleccionarTodasPartidas();
         $cod = 201;
         $mes = "TODO OK";
@@ -43,6 +46,45 @@ class Controlador
             'Cod:' => $cod,
             'Mensaje:' => $mes,
             'Personas' => $arrayPartidas
+        ];
+        echo json_encode($respuesta);
+    }
+
+    // ------------------------------ FUNCIONES USUARIO ------------------------------
+
+    static function crearUsuario($persJSON)
+    {
+        $pers = json_decode($persJSON, true);
+
+        if (Conexion::insertarPersona($pers)) {
+            $insercion = true;
+            $cod = 201;
+            $mes = "TODO OK";
+        } else {
+            $insercion = false;
+            $cod = 400;
+            $mes = "ERROR";
+        }
+
+        header(Constantes::$headerMssg . $cod . ' ' . $mes);
+        $respuesta = [
+            'Cod:' => $cod,
+            'Mensaje:' => $mes,
+            'Insercion:' => $insercion
+        ];
+        echo json_encode($respuesta);
+    }
+
+    static function allUsuarios()
+    {
+        $arrayPersonas = Conexion::seleccionarTodasPersonas();
+        $cod = 201;
+        $mes = "TODO OK";
+        header(Constantes::$headerMssg . $cod . ' ' . $mes);
+        $respuesta = [
+            'Cod:' => $cod,
+            'Mensaje:' => $mes,
+            'Personas' => $arrayPersonas
         ];
         echo json_encode($respuesta);
     }

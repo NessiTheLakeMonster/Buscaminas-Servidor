@@ -1,12 +1,10 @@
 <?php
 
-require 'Persona.php';
-require 'Partida.php';
 require 'Constantes.php';
+require 'Factoria.php';
 
 class Conexion
 {
-
     /* ---------------------- FUNCIONES DE CONEXION ------------------------------------ */
 
     static $conexion;
@@ -22,7 +20,6 @@ class Conexion
             );
         } catch (Exception $e) {
             echo "Fallo al conectar a MySQL: (" . $e->getMessage() . ")";
-            die();
         }
 
         echo self::$conexion->host_info . "<br>";
@@ -42,7 +39,7 @@ class Conexion
         self::conectar();
 
         if (!self::$conexion) {
-            die();
+            echo "Fallo al conectar a MySQL";
         } else {
             $query = Constantes::$selecPartidaByID;
             $stmt = self::$conexion->prepare($query);
@@ -126,11 +123,10 @@ class Conexion
             $finalizado = $partida->getFinalizado();
 
             $stmt->bind_param(
-                Factoria::crearPartida(
-                    $tableroOculto,
-                    $tableroJugador,
-                    $finalizado
-                )
+                "ssb",
+                $tableroOculto,
+                $tableroJugador,
+                $finalizado
             );
 
             try {
@@ -191,7 +187,16 @@ class Conexion
                 $correcto = [];
 
                 while ($fila = $result->fetch_array()) {
-                    // Crear el objeto persona
+                    $p = Factoria::crearPersona(
+                        $fila['idUsuario'],
+                        $fila['password'],
+                        $fila['nombre'],
+                        $fila['email'],
+                        $fila['partidasJugadas'],
+                        $fila['partidasGanadas'],
+                        $fila['admin']
+                    );
+                    $correcto = $p;
                 }
             } catch (Exception $e) {
                 echo 'No se pudo selecionar' . $e->getMessage();
@@ -211,7 +216,7 @@ class Conexion
             die();
         } else {
             $query = Constantes::$selectPersona;
-            $stmt = self::$conexion -> prepare($query);
+            $stmt = self::$conexion->prepare($query);
 
             try {
                 $stmt->execute();
@@ -220,7 +225,16 @@ class Conexion
                 $correcto = [];
 
                 while ($fila = $result->fetch_array()) {
-                    // Crear el objeto persona
+                    $p = Factoria::crearPersona(
+                        $fila['idUsuario'],
+                        $fila['password'],
+                        $fila['nombre'],
+                        $fila['email'],
+                        $fila['partidasJugadas'],
+                        $fila['partidasGanadas'],
+                        $fila['admin']
+                    );
+                    $correcto = $p;
                 }
             } catch (Exception $e) {
                 echo 'No se pudo selecionar' . $e->getMessage();
@@ -243,22 +257,21 @@ class Conexion
             $query = Constantes::$insertPersona;
             $stmt = self::$conexion->prepare($query);
 
-            $pass = $persona -> getPassword();
-            $nom = $persona -> getNombre();
-            $em = $persona -> getEmail();
-            $partJ = $persona -> getPartidasJugadas();
-            $partG = $persona -> getPartidasGanadas();
-            $adm = $persona -> getAdmin();
+            $pass = $persona->getPassword();
+            $nom = $persona->getNombre();
+            $em = $persona->getEmail();
+            $partJ = $persona->getPartidasJugadas();
+            $partG = $persona->getPartidasGanadas();
+            $adm = $persona->getAdmin();
 
             $stmt->bind_param(
-                $persona = Factoria::crearPersona(
-                    $pass,
-                    $nom,
-                    $em,
-                    $partJ,
-                    $partG,
-                    $adm
-                )
+                "sssiib",
+                $pass,
+                $nom,
+                $em,
+                $partJ,
+                $partG,
+                $adm
             );
 
             try {
