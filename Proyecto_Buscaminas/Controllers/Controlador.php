@@ -80,7 +80,6 @@ class Controlador
         $cod = 201;
         $mes = "TODO OK";
         header(Constantes::$headerMssg . $cod . ' ' . $mes);
-        header('Content-Type: application/json');
         
         $respuesta = [
             'Cod:' => $cod,

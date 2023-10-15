@@ -174,11 +174,15 @@ class Conexion
         self::conectar();
 
         if (!self::$conexion) {
-            /* die(); */
+            echo 'Eror al conectar a MySQL';
         } else {
             $query = Constantes::$selectPersonaByID;
             $stmt = self::$conexion->prepare($query);
-            $stmt->bind_param("i", $idPers);
+
+            $stmt->bind_param(
+                "i", 
+                $idPers
+            );
 
             try {
                 $stmt->execute();
@@ -213,7 +217,7 @@ class Conexion
         self::conectar();
 
         if (!self::$conexion) {
-            /* die(); */
+            echo 'Eror al conectar a MySQL';
         } else {
             $query = Constantes::$selectPersona;
             $stmt = self::$conexion->prepare($query);
@@ -234,7 +238,7 @@ class Conexion
                         $fila['partidasGanadas'],
                         $fila['admin']
                     );
-                    $usuarios = $p;
+                    $usuarios[] = $p;
                 }
 
                 $result->free_result();
@@ -253,7 +257,7 @@ class Conexion
         $correcto = false;
 
         if (!self::$conexion) {
-            /* die(); */
+            echo 'Eror al conectar a MySQL';
         } else {
             $query = Constantes::$insertPersona;
             $stmt = self::$conexion->prepare($query);
@@ -280,6 +284,7 @@ class Conexion
                     $correcto = true;
                 }
             } catch (Exception $e) {
+                echo 'No se pudo insertar' . $e->getMessage();
                 $correcto = false;
             }
         }
@@ -293,7 +298,7 @@ class Conexion
         $correcto = false;
 
         if (!self::$conexion) {
-            die();
+            echo 'Eror al conectar a MySQL';
         } else {
             $query = Constantes::$deletePersonaByID;
             $stmt = self::$conexion->prepare($query);
@@ -308,6 +313,7 @@ class Conexion
                     $correcto = true;
                 }
             } catch (Exception $e) {
+                echo 'No se pudo eliminar' . $e->getMessage();
                 $correcto = false;
             }
         }
