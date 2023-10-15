@@ -31,6 +31,8 @@ if ($argus[1] == 'admin') {
         } else {
             Controlador::usuarioByID($argus[2]);
         }
+    } else if ($requestMethod == 'DELETE') { // Borrar usuarios con DELETE
+        Controlador::borrarUsuario($argus[2]);
     }
 
     // Metodos para poder jugar
