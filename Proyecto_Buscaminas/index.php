@@ -20,6 +20,7 @@ Conexion::seleccionarPartida(2);
 if ($argus[1] == 'admin') {
     if ($requestMethod == 'POST') { // Creación de usuarios con POST
         $data = json_decode($datosRecibidos, true);
+
         Controlador::crearUsuario(new Persona(
             $data['idUsuario'],
             $data['password'],
@@ -29,6 +30,7 @@ if ($argus[1] == 'admin') {
             $data['partidasGanadas'],
             $data['admin']
         ));
+        
     } else if ($requestMethod == 'GET') { // Listar usuarios con GET
         Controlador::allUsuarios();
         /*Controlador::usuarioByID($argus[2]); */
