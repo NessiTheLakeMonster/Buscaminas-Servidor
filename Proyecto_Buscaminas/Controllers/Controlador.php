@@ -52,10 +52,8 @@ class Controlador
 
     // ------------------------------ FUNCIONES USUARIO ------------------------------
 
-    static function crearUsuario($persJSON)
+    static function crearUsuario($pers)
     {
-        $pers = json_decode($persJSON, true);
-
         if (Conexion::insertarPersona($pers)) {
             $insercion = true;
             $cod = 201;
@@ -72,6 +70,7 @@ class Controlador
             'Mensaje:' => $mes,
             'Insercion:' => $insercion
         ];
+
         echo json_encode($respuesta);
     }
 

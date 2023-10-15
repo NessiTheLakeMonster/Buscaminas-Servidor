@@ -252,7 +252,7 @@ class Conexion
         $correcto = false;
 
         if (!self::$conexion) {
-            die();
+            /* die(); */
         } else {
             $query = Constantes::$insertPersona;
             $stmt = self::$conexion->prepare($query);
