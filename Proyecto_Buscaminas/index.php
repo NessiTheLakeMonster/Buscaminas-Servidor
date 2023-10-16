@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/Controllers/Controlador.php';
+require_once __DIR__ . '/Controllers/Controlador_Usuario.php';
 require_once __DIR__ . '/Databases/Conexion.php';
 
 header("Content-Type:application/json");
@@ -30,7 +31,7 @@ if ($argus[1] == 'admin') {
             if ($requestMethod == 'POST') { // Creación de usuarios con POST
                 $data = json_decode($datosRecibidos, true);
 
-                Controlador::crearUsuario(Factoria::crearPersona(
+                Controlador_Usuario::crearUsuario(Factoria::crearPersona(
                     $data['idUsuario'],
                     $data['password'],
                     $data['nombre'],
@@ -41,12 +42,12 @@ if ($argus[1] == 'admin') {
                 ));
             } else if ($requestMethod == 'GET') { // Listar usuarios con GET
                 if ($argus[2] == '') {
-                    Controlador::allUsuarios();
+                    Controlador_Usuario::allUsuarios();
                 } else {
-                    Controlador::usuarioByID($argus[2]);
+                    Controlador_Usuario::usuarioByID($argus[2]);
                 }
             } else if ($requestMethod == 'DELETE') { // Borrar usuarios con DELETE
-                Controlador::borrarUsuario($argus[2]);
+                Controlador_Usuario::borrarUsuario($argus[2]);
             }
         }
     }

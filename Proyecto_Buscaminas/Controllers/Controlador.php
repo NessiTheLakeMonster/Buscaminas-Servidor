@@ -50,91 +50,6 @@ class Controlador
         echo json_encode($respuesta);
     }
 
-    // ------------------------------ FUNCIONES USUARIO ------------------------------
-
-    static function crearUsuario($pers)
-    {
-        if (Conexion::insertarPersona($pers)) {
-            $insercion = true;
-            $cod = 201;
-            $mes = "TODO OK";
-        } else {
-            $insercion = false;
-            $cod = 400;
-            $mes = "ERROR";
-        }
-
-        header(Constantes::$headerMssg . $cod . ' ' . $mes);
-        $respuesta = [
-            'Cod:' => $cod,
-            'Mensaje:' => $mes,
-            'Insercion:' => $insercion
-        ];
-
-        echo json_encode($respuesta);
-    }
-
-    static function allUsuarios()
-    {
-        if ($arrayPersonas = Conexion::seleccionarTodasPersonas()) {
-            $cod = 201;
-            $mes = "TODO OK";
-        } else {
-            $cod = 400;
-            $mes = "ERROR";
-        }
-
-        header(Constantes::$headerMssg . $cod . ' ' . $mes);
-        $respuesta = [
-            'Cod:' => $cod,
-            'Mensaje:' => $mes,
-            'Personas' => $arrayPersonas
-        ];
-
-        echo json_encode($respuesta);
-    }
-
-    static function usuarioByID($id)
-    {
-        if ($persona = Conexion::seleccionarPersona($id)) {
-            $cod = 201;
-            $mes = "TODO OK";
-        } else {
-            $cod = 400;
-            $mes = "ERROR";
-        }
-
-        header(Constantes::$headerMssg . $cod . ' ' . $mes);
-        $respuesta = [
-            'Cod:' => $cod,
-            'Mensaje:' => $mes,
-            'Persona' => $persona
-        ];
-        echo json_encode($respuesta);
-    }
-
-    static function borrarUsuario($id)
-    {
-        if (Conexion::deletePersona($id)) {
-            $borrado = true;
-            $cod = 201;
-            $mes = "TODO OK";
-        } else {
-            $borrado = false;
-            $cod = 400;
-            $mes = "ERROR";
-        }
-
-        header(Constantes::$headerMssg . $cod . ' ' . $mes);
-        $respuesta = [
-            'Cod:' => $cod,
-            'Mensaje:' => $mes,
-            'Borrado:' => $borrado
-        ];
-
-        echo json_encode($respuesta);
-    }
-
     // ----------------------- FUNCION DE LOGIN --------------------------
 
     static function login($email, $passw)
@@ -159,13 +74,22 @@ class Controlador
         echo json_encode($respuesta);
     }
 
-    static function checkAdmin($persona)
+    /**
+     * Función que comprueba si el usuario pasado es admin o no
+     * 
+     * Si un usuario es admin su campo valdrá 0
+     * Si un usuario no es admin su campo valdrá 1
+     * 
+     * @param Persona $persona
+     * @return boolean
+     */
+    static function checkAdmin($persona) 
     {
         $admin = false;
 
-        if ($persona->getAdmin() == 0) { // Si es 0, es admin
+        if ($persona->getAdmin() == 0) { 
             $admin = true;
-        } else { // Si es 1, no es admin
+        } else { 
             $admin = false;
         }
 
