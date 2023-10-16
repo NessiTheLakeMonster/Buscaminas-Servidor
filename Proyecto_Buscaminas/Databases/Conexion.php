@@ -39,19 +39,24 @@ class Conexion
         self::conectar();
 
         if (!self::$conexion) {
-            echo "Fallo al conectar a MySQL";
+            echo "Error al conectar a MySQL";
         } else {
             $query = Constantes::$selecPartidaByID;
             $stmt = self::$conexion->prepare($query);
-            $stmt->bind_param("i", $idPart);
+
+            $stmt->bind_param(
+                "i",
+                $idPart
+            );
 
             try {
                 $stmt->execute();
                 $result = $stmt->get_result();
 
-                $correcto = [];
+                $partida = [];
+
                 while ($fila = $result->fetch_array()) {
-                    $part = new Partida(
+                    $part = Factoria::crearPartida(
                         $fila["idPartida"],
                         $fila["idUsuario"],
                         $fila["tableroOculto"],
@@ -59,16 +64,16 @@ class Conexion
                         $fila["finalizado"]
                     );
 
-                    $correcto = $part;
+                    $partida = $part;
                 }
+
+                $result->free_result();
+                return $partida;
             } catch (Exception $e) {
                 echo 'No se pudo selecionar' . $e->getMessage();
-                $correcto = false;
             }
         }
-
         self::desconectar();
-        return $correcto;
     }
 
     public static function seleccionarTodasPartidas()
@@ -76,7 +81,7 @@ class Conexion
         self::conectar();
 
         if (!self::$conexion) {
-            echo 'Eror al conectar a MySQL';
+            echo 'Error al conectar a MySQL';
         } else {
             $query = Constantes::$selecPartida;
             $stmt = self::$conexion->prepare($query);
@@ -85,26 +90,26 @@ class Conexion
                 $stmt->execute();
                 $result = $stmt->get_result();
 
-                $correcto = [];
+                $partidas = [];
                 while ($fila = $result->fetch_array()) {
-                    $partida = new Partida(
+                    $p = Factoria::crearPartida(
                         $fila['idPartida'],
                         $fila['idUsuario'],
                         $fila['tableroOculto'],
                         $fila['tableroJugador'],
                         $fila['finalizado']
                     );
-
-                    array_push($correcto, $partida);
+                    $partidas[] = $p;
                 }
+
+                $result->free_result();
+                return $partidas;
             } catch (Exception $e) {
-                echo 'No se pudo selecionar' . $e->getMessage();
-                $correcto = false;
+                echo 'No se pudo seleccionar' . $e->getMessage();
             }
         }
 
         self::desconectar();
-        return $correcto;
     }
 
     public static function insertarPartida($partida)
@@ -113,7 +118,7 @@ class Conexion
         $correcto = false;
 
         if (!self::$conexion) {
-            echo 'Eror al conectar a MySQL';
+            echo 'Error al conectar a MySQL';
         } else {
             $query = Constantes::$insertPartida;
             $stmt = self::$conexion->prepare($query);
@@ -148,12 +153,15 @@ class Conexion
         $correcto = false;
 
         if (!self::$conexion) {
-            echo 'Eror al conectar a MySQL';
+            echo 'Error al conectar a MySQL';
         } else {
             $query = Constantes::$deletePartidaByID;
             $stmt = self::$conexion->prepare($query);
 
-            $stmt->bind_param("i", $idPart);
+            $stmt->bind_param(
+                "i", 
+                $idPart
+            );
 
             try {
                 if ($stmt->execute()) {
@@ -174,7 +182,7 @@ class Conexion
         self::conectar();
 
         if (!self::$conexion) {
-            echo 'Eror al conectar a MySQL';
+            echo 'Error al conectar a MySQL';
         } else {
             $query = Constantes::$selectPersonaByID;
             $stmt = self::$conexion->prepare($query);
@@ -261,7 +269,7 @@ class Conexion
         self::conectar();
 
         if (!self::$conexion) {
-            echo 'Eror al conectar a MySQL';
+            echo 'Error al conectar a MySQL';
         } else {
             $query = Constantes::$selectPersona;
             $stmt = self::$conexion->prepare($query);
@@ -301,7 +309,7 @@ class Conexion
         $correcto = false;
 
         if (!self::$conexion) {
-            echo 'Eror al conectar a MySQL';
+            echo 'Error al conectar a MySQL';
         } else {
             $query = Constantes::$insertPersona;
             $stmt = self::$conexion->prepare($query);
@@ -342,7 +350,7 @@ class Conexion
         $correcto = false;
 
         if (!self::$conexion) {
-            echo 'Eror al conectar a MySQL';
+            echo 'Error al conectar a MySQL';
         } else {
             $query = Constantes::$deletePersonaByID;
             $stmt = self::$conexion->prepare($query);
