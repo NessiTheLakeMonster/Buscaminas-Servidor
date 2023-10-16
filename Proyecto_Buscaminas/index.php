@@ -57,23 +57,18 @@ if ($requestMethod == 'POST') {
             $data['password']
         );
 
-        print_r($data[0]);
-        print_r(Controlador::checkAdmin($data[0]));
-
         if (Controlador::checkAdmin($data[0]) == true && $data[0] !== null) {
             $data[1] = Controlador_Usuario::crearUsuario(
-                Factoria::crearPersona (
-                    $data['idUsuario'],
-                    $data['password'],
-                    $data['nombre'],
-                    $data['email'],
-                    $data['partidasJugadas'],
-                    $data['partidasGanadas'],
-                    $data['admin']
+                Factoria::crearPersona(
+                    $data['Personas']['idUsuario'],
+                    $data['Personas']['password'],
+                    $data['Personas']['nombre'],
+                    $data['Personas']['email'],
+                    $data['Personas']['partidasJugadas'],
+                    $data['Personas']['partidasGanadas'],
+                    $data['Personas']['admin']
                 )
             );
-
-            print_r($data);
         } else {
             $msgError = [
                 'Cod:' => 200,
@@ -99,7 +94,7 @@ if ($requestMethod == 'DELETE') {
             if ($argus[2] == null) {
                 $msgError = [
                     'Cod:' => 200,
-                    'Mensaje:' => "No has metido que usuario quieres borrar"
+                    'Mensaje:' => "No has especificado que usuario quieres borrar"
                 ];
 
                 echo json_encode($msgError);
@@ -117,52 +112,5 @@ if ($requestMethod == 'DELETE') {
     }
 }
 
-
-
-// Metodos manejados unicamente por el administrador
-/* if ($argus[1] == 'admin') {
-
-    if ($requestMethod == 'POST') { // Creación de usuarios con POST
-        $data = json_decode($datosRecibidos, true);
-
-        $persona = Controlador::login(
-            $data['email'],
-            $data['password']
-        );
-
-        if (Controlador::checkAdmin($persona) == true) {
-
-            Controlador_Usuario::crearUsuario(Factoria::crearPersona(
-                $data['idUsuario'],
-                $data['password'],
-                $data['nombre'],
-                $data['email'],
-                $data['partidasJugadas'],
-                $data['partidasGanadas'],
-                $data['admin']
-            ));
-        }
-    } else if ($requestMethod == 'GET' && $argus[1] == 'admin') { // Listar usuarios con GET
-        $data = json_decode($datosRecibidos, true);
-
-        $data[0] = Controlador::login(
-            ['email'],
-            ['password']
-        );
-
-        print_r($data);
-
-        if (Controlador::checkAdmin($data[0]) == true) {
-            if ($argus[2] == '') {
-                $data[1] = Controlador_Usuario::allUsuarios();
-            } else {
-                Controlador_Usuario::usuarioByID($argus[2]);
-            }
-        }
-    } else if ($requestMethod == 'DELETE') { // Borrar usuarios con DELETE
-        Controlador_Usuario::borrarUsuario($argus[2]);
-    }
-
-    // Metodos para poder jugar
-} else if ($argus[1] == 'jugador') {
-} */
+if ($requestMethod == 'PUT') {
+}
