@@ -217,7 +217,7 @@ class Conexion
         self::conectar();
 
         if (!self::$conexion) {
-            echo 'Eror al conectar a MySQL';
+            echo 'Error al conectar a MySQL';
         } else {
             $query = Constantes::$selectPersonaByEmailPass;
             $stmt = self::$conexion->prepare($query);
@@ -244,7 +244,7 @@ class Conexion
                         $fila['partidasGanadas'],
                         $fila['admin']
                     );
-                    $usuarios[] = $p;
+                    $usuarios = $p;
                 }
 
                 $result->free_result();

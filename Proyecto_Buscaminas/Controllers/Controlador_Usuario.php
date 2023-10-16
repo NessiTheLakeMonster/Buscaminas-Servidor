@@ -1,10 +1,10 @@
 <?php
 
 require_once __DIR__ . '\..\Databases\Conexion.php';
+require_once __DIR__ . '\..\Model\Persona.php';
 
 class Controlador_Usuario
 {
-
     static function crearUsuario($pers)
     {
         if (Conexion::insertarPersona($pers)) {

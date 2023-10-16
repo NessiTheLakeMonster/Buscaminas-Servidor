@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '\..\Databases\Conexion.php';
+require_once __DIR__ . '\..\Model\Persona.php';
 
 class Controlador
 {
@@ -54,24 +55,36 @@ class Controlador
 
     static function login($email, $passw)
     {
-        if (Conexion::seleccionarPersona($email, $passw)) {
+        $persona = Conexion::seleccionarPersonaLogin($email, $passw);
+
+        if ($persona != null) {
             $login = true;
             $cod = 201;
             $mes = "TODO OK";
+
+            header(Constantes::$headerMssg . $cod . ' ' . $mes);
+            $respuesta = [
+                'Cod:' => $cod,
+                'Mensaje:' => $mes,
+                'Login:' => $login
+            ];
+
+            return $persona;
         } else {
             $login = false;
             $cod = 400;
             $mes = "ERROR";
+
+            header(Constantes::$headerMssg . $cod . ' ' . $mes);
+            $respuesta = [
+                'Cod:' => $cod,
+                'Mensaje:' => $mes,
+                'Login:' => $login
+            ];
+
+            echo json_encode($respuesta);
+            return null;
         }
-
-        header(Constantes::$headerMssg . $cod . ' ' . $mes);
-        $respuesta = [
-            'Cod:' => $cod,
-            'Mensaje:' => $mes,
-            'Login:' => $login
-        ];
-
-        echo json_encode($respuesta);
     }
 
     /**
@@ -83,13 +96,13 @@ class Controlador
      * @param Persona $persona
      * @return boolean
      */
-    static function checkAdmin($persona) 
+    static function checkAdmin($persona)
     {
         $admin = false;
 
-        if ($persona->getAdmin() == 0) { 
+        if ($persona->getAdmin() == 0) {
             $admin = true;
-        } else { 
+        } else {
             $admin = false;
         }
 
