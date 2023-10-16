@@ -1,7 +1,9 @@
 <?php
 
 require_once __DIR__ . '/Controllers/Controlador.php';
+require_once __DIR__ . '/Controllers/Controlador_Usuario.php';
 require_once __DIR__ . '/Databases/Conexion.php';
+require_once __DIR__ . '/Model/Persona.php';
 
 header("Content-Type:application/json");
 $requestMethod = $_SERVER["REQUEST_METHOD"];
@@ -11,30 +13,104 @@ $datosRecibidos = file_get_contents("php://input");
 $argus = explode('/', $paths);
 unset($argus[0]);
 
-// Metodos manejados unicamente por el administrador
-if ($argus[1] == 'admin') {
-    if ($requestMethod == 'POST') { // Creación de usuarios con POST
+// Métodos con el verbo GET
+if ($requestMethod == 'GET') {
+    // Función GET para los administradores
+    if ($argus[1] == 'admin') {
         $data = json_decode($datosRecibidos, true);
 
-        Controlador::crearUsuario(new Persona(
-            $data['idUsuario'],
-            $data['password'],
-            $data['nombre'],
+        $data[0] = Controlador::login(
             $data['email'],
-            $data['partidasJugadas'],
-            $data['partidasGanadas'],
-            $data['admin']
-        ));
-    } else if ($requestMethod == 'GET') { // Listar usuarios con GET
-        if ($argus[2] == '') {
-            Controlador::allUsuarios();
-        } else {
-            Controlador::usuarioByID($argus[2]);
-        }
-    } else if ($requestMethod == 'DELETE') { // Borrar usuarios con DELETE
-        Controlador::borrarUsuario($argus[2]);
-    }
+            $data['password']
+        );
 
-    // Metodos para poder jugar
-} else if ($argus[1] == 'jugador') {
+        // Listar los usuarios en modo administrador
+        if (Controlador::checkAdmin($data[0]) == true && $data[0] !== null) {
+            if ($argus[2] == null) {
+                $data[1] = Controlador_Usuario::allUsuarios();
+            } else {
+                $data[1] = Controlador_Usuario::usuarioByID($argus[2]);
+            }
+        } else {
+            $msgError = [
+                'Cod:' => 200,
+                'Mensaje:' => "Usuario no es administrador"
+            ];
+
+            echo json_encode($msgError);
+        }
+
+        // Función GET para los jugadores
+    } else {
+        // codigo para el jugador
+    }
+}
+
+// Métodos con el verbo POST
+if ($requestMethod == 'POST') {
+    // Función POST para los administradores
+    if ($argus[1] == 'admin') {
+        $data = json_decode($datosRecibidos, true);
+
+        $data[0] = Controlador::login(
+            $data['email'],
+            $data['password']
+        );
+
+        if (Controlador::checkAdmin($data[0]) == true && $data[0] !== null) {
+            $data[1] = Controlador_Usuario::crearUsuario(
+                Factoria::crearPersona(
+                    $data['Personas']['idUsuario'],
+                    $data['Personas']['password'],
+                    $data['Personas']['nombre'],
+                    $data['Personas']['email'],
+                    $data['Personas']['partidasJugadas'],
+                    $data['Personas']['partidasGanadas'],
+                    $data['Personas']['admin']
+                )
+            );
+        } else {
+            $msgError = [
+                'Cod:' => 200,
+                'Mensaje:' => "Usuario no es administrador"
+            ];
+
+            echo json_encode($msgError);
+        }
+    }
+}
+
+if ($requestMethod == 'DELETE') {
+
+    if ($argus[1] == 'admin') {
+        $data = json_decode($datosRecibidos, true);
+
+        $data[0] = Controlador::login(
+            $data['email'],
+            $data['password']
+        );
+
+        if (Controlador::checkAdmin($data[0]) == true && $data[0] !== null) {
+            if ($argus[2] == null) {
+                $msgError = [
+                    'Cod:' => 200,
+                    'Mensaje:' => "No has especificado que usuario quieres borrar"
+                ];
+
+                echo json_encode($msgError);
+            } else {
+                $data[1] = Controlador_Usuario::borrarUsuario($argus[2]);
+            }
+        } else {
+            $msgError = [
+                'Cod:' => 200,
+                'Mensaje:' => "Usuario no es administrador"
+            ];
+
+            echo json_encode($msgError);
+        }
+    }
+}
+
+if ($requestMethod == 'PUT') {
 }

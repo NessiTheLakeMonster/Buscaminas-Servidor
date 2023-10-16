@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '\..\Databases\Conexion.php';
+require_once __DIR__ . '\..\Model\Persona.php';
 
 class Controlador
 {
@@ -50,88 +51,61 @@ class Controlador
         echo json_encode($respuesta);
     }
 
-    // ------------------------------ FUNCIONES USUARIO ------------------------------
+    // ----------------------- FUNCION DE LOGIN --------------------------
 
-    static function crearUsuario($pers)
+    static function login($email, $passw)
     {
-        if (Conexion::insertarPersona($pers)) {
-            $insercion = true;
+        $persona = Conexion::seleccionarPersonaLogin($email, $passw);
+
+        if ($persona != null) {
+            $login = true;
             $cod = 201;
             $mes = "TODO OK";
+
+            header(Constantes::$headerMssg . $cod . ' ' . $mes);
+            $respuesta = [
+                'Cod:' => $cod,
+                'Mensaje:' => $mes,
+                'Login:' => $login
+            ];
+
+            return $persona;
         } else {
-            $insercion = false;
+            $login = false;
             $cod = 400;
             $mes = "ERROR";
+
+            header(Constantes::$headerMssg . $cod . ' ' . $mes);
+            $respuesta = [
+                'Cod:' => $cod,
+                'Mensaje:' => $mes,
+                'Login:' => $login
+            ];
+
+            echo json_encode($respuesta);
+            return null;
         }
-
-        header(Constantes::$headerMssg . $cod . ' ' . $mes);
-        $respuesta = [
-            'Cod:' => $cod,
-            'Mensaje:' => $mes,
-            'Insercion:' => $insercion
-        ];
-
-        echo json_encode($respuesta);
     }
 
-    static function allUsuarios()
+    /**
+     * Función que comprueba si el usuario pasado es admin o no
+     * 
+     * Si un usuario es admin su campo valdrá 0
+     * Si un usuario no es admin su campo valdrá 1
+     * 
+     * @param Persona $persona
+     * @return boolean
+     */
+    static function checkAdmin($persona)
     {
-        if ($arrayPersonas = Conexion::seleccionarTodasPersonas()) {
-            $cod = 201;
-            $mes = "TODO OK";
+        $admin = false;
+
+        if ($persona->getAdmin() == 0) {
+            $admin = true;
         } else {
-            $cod = 400;
-            $mes = "ERROR";
+            $admin = false;
         }
 
-        header(Constantes::$headerMssg . $cod . ' ' . $mes);
-        $respuesta = [
-            'Cod:' => $cod,
-            'Mensaje:' => $mes,
-            'Personas' => $arrayPersonas
-        ];
-
-        echo json_encode($respuesta);
-    }
-
-    static function usuarioByID($id)
-    {
-        if ($persona = Conexion::seleccionarPersona($id)) {
-            $cod = 201;
-            $mes = "TODO OK";
-        } else {
-            $cod = 400;
-            $mes = "ERROR";
-        }
-
-        header(Constantes::$headerMssg . $cod . ' ' . $mes);
-        $respuesta = [
-            'Cod:' => $cod,
-            'Mensaje:' => $mes,
-            'Persona' => $persona
-        ];
-        echo json_encode($respuesta);
-    }
-
-    static function borrarUsuario($id)
-    {
-        if (Conexion::deletePersona($id)) {
-            $borrado = true;
-            $cod = 201;
-            $mes = "TODO OK";
-        } else {
-            $borrado = false;
-            $cod = 400;
-            $mes = "ERROR";
-        }
-
-        header(Constantes::$headerMssg . $cod . ' ' . $mes);
-        $respuesta = [
-            'Cod:' => $cod,
-            'Mensaje:' => $mes,
-            'Borrado:' => $borrado
-        ];
-
-        echo json_encode($respuesta);
+        return $admin;
     }
 }
