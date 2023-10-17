@@ -91,7 +91,7 @@ Estructura que se debe seguir, en este caso con ``DELETE`` solo hace falta inici
 
 | idUsuario | password | nombre | email | partidasJugadas | partidasGanadas | admin |
 | ----------|-----------|-------|-------|-------------|--------- | ------ |
-| 1 | default123 | default | emailDefault@gmail.com | 1|1|0|
+| 1 | default123 | default | email@gmail.com | 1|1|0|
 
 + ``idUsuario`` -> Es auto incremental
 + ``admin`` -> 0 si es admin, 1 si no lo es
