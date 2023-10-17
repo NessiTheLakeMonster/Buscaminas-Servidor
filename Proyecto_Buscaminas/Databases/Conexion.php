@@ -159,7 +159,36 @@ class Conexion
             $stmt = self::$conexion->prepare($query);
 
             $stmt->bind_param(
-                "i", 
+                "i",
+                $idPart
+            );
+
+            try {
+                if ($stmt->execute()) {
+                    $correcto = true;
+                }
+            } catch (Exception $e) {
+                $correcto = false;
+            }
+        }
+        self::desconectar();
+        return $correcto;
+    }
+
+    public static function updateTableroJugador($tableroJugador, $idPart)
+    {
+        self::conectar();
+        $correcto = false;
+
+        if (!self::$conexion) {
+            echo 'Error al conectar a MySQL';
+        } else {
+            $query = Constantes::$updateTableroJugador;
+            $stmt = self::$conexion->prepare($query);
+
+            $stmt->bind_param(
+                "si",
+                $tableroJugador,
                 $idPart
             );
 
@@ -366,6 +395,36 @@ class Conexion
                 }
             } catch (Exception $e) {
                 echo 'No se pudo eliminar' . $e->getMessage();
+                $correcto = false;
+            }
+        }
+        self::desconectar();
+        return $correcto;
+    }
+
+    public static function updatePartidasJugadas($partJ, $idUsu)
+    {
+        self::conectar();
+        $correcto = false;
+
+        if (!self::$conexion) {
+            echo 'Error al conectar a MySQL';
+        } else {
+            $query = Constantes::$updatePartidasJugadas;
+            $stmt = self::$conexion->prepare($query);
+
+            $stmt->bind_param(
+                "ii",
+                $partJ,
+                $idUsu
+            );
+
+            try {
+                if ($stmt->execute()) {
+                    $correcto = true;
+                }
+            } catch (Exception $e) {
+                echo 'No se pudo actualizar' . $e->getMessage();
                 $correcto = false;
             }
         }

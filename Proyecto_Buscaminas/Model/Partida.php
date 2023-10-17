@@ -71,6 +71,16 @@ class Partida
 
     // -----------------------------------------------------------
 
+    /**
+     * Función que inicializa el tablero oculto con las minas
+     * 
+     * 0 -> No hay mina
+     * 1 -> Hay mina
+     * 
+     * @param $longitud
+     * @param $minas
+     * @return array
+     */
     public function inicializarTableroOculto($longitud, $minas)
     {
         $t = $this->tableroOculto;
@@ -79,24 +89,47 @@ class Partida
         for ($i = 0; $i < $minas; $i++) {
             $index = rand(0, $longitud - 1);
 
-            while ($t[$index] === 1) {
+            while ($t[$index] === '*') {
                 $index = rand(0, $longitud - 1);
             }
-            
-            $t[$index] = 1;
+
+            $t[$index] = '*';
         }
 
         return $t;
     }
 
+    /**
+     * Función que inicializa el tablero del jugador
+     * 
+     * - -> Casilla no destapada
+     * 
+     * @param $longitud
+     * @return array
+     */
     public function inicializarTableroJugador($longitud)
     {
         $t = $this->tableroJugador;
-        $t = array_fill(0, $longitud - 1, '0');
+        $t = array_fill(0, $longitud - 1, '-');
         return $t;
     }
 
-    public function destaparPista() {
+    public function destaparPista($posicion)
+    {
+        $tabJ = $this->tableroJugador;
+        $tabO = $this->tableroOculto;
 
+        if ($tabO[$posicion] == '*') {
+            $tabJ[$posicion] = '*';
+        } else if ($tabO[$posicion] == 0) {
+            if (($posicion > 0 && $tabO[$posicion - 1] == '*') 
+                || ($posicion < count($tabO) - 1 && $tabO[$posicion + 1] == '*')) {
+                $tabJ[$posicion] = 1;
+            } else {
+                $tabJ[$posicion] = 0;
+            }
+        }
+
+        return $tabJ;
     }
 }

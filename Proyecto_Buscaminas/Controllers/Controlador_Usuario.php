@@ -87,4 +87,23 @@ class Controlador_Usuario
 
         echo json_encode($respuesta);
     }
+
+    static function incrementarPartJugadas($partJ, $id)
+    {
+        if (Conexion::updatePartidasJugadas($partJ, $id)) {
+            $cod = 201;
+            $mes = "TODO OK";
+        } else {
+            $cod = 400;
+            $mes = "ERROR";
+        }
+
+        header(Constantes::$headerMssg . $cod . ' ' . $mes);
+        $respuesta = [
+            'Cod: ' => $cod,
+            'Mensaje: ' => $mes,
+            'PartidasJugadas' => $partJ
+        ];
+        echo json_encode($respuesta);
+    }
 }
