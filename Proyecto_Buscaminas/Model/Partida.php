@@ -71,4 +71,32 @@ class Partida
 
     // -----------------------------------------------------------
 
+    public function inicializarTableroOculto($longitud, $minas)
+    {
+        $t = $this->tableroOculto;
+        $t = array_fill(0, $longitud - 1, 0);
+
+        for ($i = 0; $i < $minas; $i++) {
+            $index = rand(0, $longitud - 1);
+
+            while ($t[$index] === 1) {
+                $index = rand(0, $longitud - 1);
+            }
+            
+            $t[$index] = 1;
+        }
+
+        return $t;
+    }
+
+    public function inicializarTableroJugador($longitud)
+    {
+        $t = $this->tableroJugador;
+        $t = array_fill(0, $longitud - 1, '0');
+        return $t;
+    }
+
+    public function destaparPista() {
+
+    }
 }

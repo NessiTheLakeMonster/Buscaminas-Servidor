@@ -3,14 +3,13 @@
 require_once __DIR__ . '\..\Databases\Conexion.php';
 require_once __DIR__ . '\..\Model\Persona.php';
 require_once __DIR__ . '\..\Model\Partida.php';
-require_once __DIR__ . '\..\Model\Tablero.php';
 
 class Controlador
 {
 
     static function crearPartida($p)
     {
-        if (Conexion::insertarPartida($p)) {
+        if ($partida = Conexion::insertarPartida($p)) {
             $insercion = true;
             $cod = 201;
             $msg = 'TODO OK';
@@ -24,7 +23,8 @@ class Controlador
         $respuesta = [
             'Cod: ' => $cod,
             'Mensaje: ' => $msg,
-            'Insercion: ' =>  $insercion
+            'Insercion: ' =>  $insercion,
+            'Partida' => $partida
         ];
         echo json_encode($respuesta);
     } 
