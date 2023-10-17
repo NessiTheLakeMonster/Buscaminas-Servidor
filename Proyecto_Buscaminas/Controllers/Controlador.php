@@ -27,7 +27,7 @@ class Controlador
             'Partida' => $partida
         ];
         echo json_encode($respuesta);
-    } 
+    }
 
     static function allPartidas()
     {
@@ -49,31 +49,64 @@ class Controlador
         echo json_encode($respuesta);
     }
 
-    static function partidaByIdUsuario($id)
+    static function partidaById($id)
     {
-    }
+        if ($partida = Conexion::seleccionarPartida($id)) {
+            $cod = 201;
+            $mes = "TODO OK";
 
-    // ----------------------- FUNCION DE TABLERO ------------------------
-
-    /* static function crearTablero($tab)
-    {
-        $casillas = $tab -> getCasillas();
-        $minas = $tab -> getMinas();
-
-        if ($casillas == null || $minas == null) {
-            $t = Factoria::crearTablero(
-                Constantes::$defaultCasillas,
-                Constantes::$defaultMinas
-            );
+            return $partida;
         } else {
-            $t = Factoria::crearTablero(
-                $casillas,
-                $minas
-            );
+            $cod = 400;
+            $mes = "ERROR";
         }
 
-        return $t;
-    } */
+        header(Constantes::$headerMssg . $cod . ' ' . $mes);
+        $respuesta = [
+            'Cod:' => $cod,
+            'Mensaje:' => $mes,
+            'Partida' => $partida
+        ];
+
+        echo json_encode($respuesta);
+
+        
+    }
+
+    static function updateTablero($tabStr, $id)
+    {
+        if ($partida = Conexion::updateTableroJugador($tabStr, $id)) {
+            $cod = 201;
+            $mes = "TODO OK";
+        } else {
+            $cod = 400;
+            $mes = "ERROR";
+        }
+
+        $tabArr = explode(',', $tabStr);
+
+        header(Constantes::$headerMssg . $cod . ' ' . $mes);
+        $respuesta = [
+            'Cod: ' => $cod,
+            'Mensaje: ' => $mes,
+            'Partida' => $partida
+        ];
+        echo json_encode($respuesta);
+    }
+
+    static function strToArray($str)
+    {
+        $array = explode(',', $str);
+
+        return $array;
+    }
+
+    static function arrayToStr($array)
+    {
+        $str = implode(',', $array);
+
+        return $str;
+    }
 
     // ----------------------- FUNCION DE LOGIN --------------------------
 

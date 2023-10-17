@@ -5,6 +5,8 @@ require_once __DIR__ . '/Controllers/Controlador_Usuario.php';
 require_once __DIR__ . '/Databases/Conexion.php';
 require_once __DIR__ . '/Model/Persona.php';
 require_once __DIR__ . '/Model/Partida.php';
+require_once __DIR__ . '/Factoria.php';
+require_once __DIR__ . '/Constantes.php';
 
 header("Content-Type:application/json");
 $requestMethod = $_SERVER["REQUEST_METHOD"];
@@ -14,9 +16,35 @@ $datosRecibidos = file_get_contents("php://input");
 $argus = explode('/', $paths);
 unset($argus[0]);
 
-$partida = new Partida(1, 1, "[]", "[]", 1);
-$table = $partida->inicializarTableroOculto(10, 2);
-print_r($table);
+$p = Conexion::seleccionarPartida(18);
+print_r($p);
+$tab = $p->getTableroJugador();
+print_r($tab);
+$tab2 = $p->getTableroOculto();
+print_r($tab2);
+
+$tabArr = Controlador::strToArray($tab);
+$p->setTableroJugador($tabArr);
+print_r($tabArr);
+
+$tabArr2 = Controlador::strToArray($tab2);
+$p->setTableroOculto($tabArr2);
+print_r($tabArr2);
+
+$new = $p->destaparPista(3);
+print_r(count($new));
+$p->setTableroJugador($new);
+print_r($new);
+
+$tabStr = Controlador::arrayToStr($new);
+print_r($tabStr);
+
+
+
+
+
+/* Conexion::updateTableroJugador($tabStr, 17); */
+
 
 // Métodos con el verbo GET
 if ($requestMethod == 'GET') {
@@ -55,37 +83,40 @@ if ($requestMethod == 'GET') {
             $data['password']
         );
 
+        $data[2] = $p;
+        $p = new Partida(1, 1, 1, 1, 1);
+
         if ($data[0] !== null) {
             // Usuario elige el tamaño y las minas de su tablero
             if (is_numeric($argus[2]) && is_numeric($argus[3])) {
-                $tabO = $partida->inicializarTableroOculto($argus[2], $argus[3]);
-                $tabO_str = implode(",", $tabO);
-                $tabJ = $partida->inicializarTableroJugador($argus[2]);
-                $tabJ_str = implode(",", $tabJ);
+                $tabO = $p->inicializarTableroOculto($argus[2], $argus[3]);
+                $tabO_str = Controlador::arrayToStr($tabO);
+                $tabJ = $p->inicializarTableroJugador($argus[2]);
+                $tabJ_str = Controlador::arrayToStr($tabJ);
 
                 $p = Controlador::crearPartida(
                     Factoria::crearPartida(
                         ['idPartida'],
                         $data[0]->getIdUsuario(),
-                        "[" . $tabO_str . "]",
-                        "[" . $tabJ_str . "]",
+                        $tabO_str,
+                        $tabJ_str,
                         1
                     )
                 );
 
-                // El tablero se crea por defecto con 10 casillas y 2 minas
+                // El tablero se crea por defecto con 10 casillas y 2 minas (por defecto)
             } else if ($argus[2] == null && $argus[3] == null) {
-                $tabO = $partida->inicializarTableroOculto(Constantes::$defaultCasillas, Constantes::$defaultMinas);
-                $tabO_str = implode(",", $tabO);
-                $tabJ = $partida->inicializarTableroJugador(Constantes::$defaultCasillas);
-                $tabJ_str = implode(",", $tabJ);
+                $tabO = $p->inicializarTableroOculto(Constantes::$defaultCasillas, Constantes::$defaultMinas);
+                $tabO_str = Controlador::arrayToStr($tabO);
+                $tabJ = $p->inicializarTableroJugador(Constantes::$defaultCasillas);
+                $tabJ_str = Controlador::arrayToStr($tabJ);
 
                 $p = Controlador::crearPartida(
                     Factoria::crearPartida(
                         ['idPartida'],
                         $data[0]->getIdUsuario(),
-                        "[" . $tabO_str . "]",
-                        "[" . $tabJ_str . "]",
+                        $tabO_str,
+                        $tabJ_str,
                         1
                     )
                 );
@@ -132,7 +163,61 @@ if ($requestMethod == 'POST') {
 
             echo json_encode($msgError);
         }
+
+        // Función POST para los jugadores
     } else if ($argus[1] == 'jugar') {
+        $data = json_decode($datosRecibidos, true);
+
+        $data[0] = Controlador::login(
+            $data['email'],
+            $data['password']
+        );
+
+        print_r($data);
+
+        if ($data[0] !== null) {
+            if ($argus[1] !== null) {
+
+                $partida = Controlador::partidaById($argus[2]);
+
+                $partida = Factoria::crearPartida(
+                    $partida->getIdPartida(),
+                    $partida->getIdUsuario(),
+                    $partida->getTableroOculto(),
+                    $partida->getTableroJugador(),
+                    $partida->getFinalizado()
+                );
+
+                print_r($partida);
+
+                // Compruebo que la partida que va a jugar el usuario es suya
+                if ($partida->getIdUsuario() == $data[0]->getIdUsuario() || $partida == null) {
+
+
+                    $newTableroOculto = $partida->getTableroOculto();
+                    print_r($newTableroOculto);
+
+                    $newTablero = $partida->destaparPista($argus[3]);
+
+                    /* Conexion::updateTableroJugador($newTablero, $data[1]['Posicion']);
+                    print_r($newTablero); */
+                } else {
+                    $msgError = [
+                        'Cod:' => 201,
+                        'Mensaje:' => "No puedes acceder a esta partida"
+                    ];
+
+                    echo json_encode($msgError);
+                }
+            }
+        } else {
+            $msgError = [
+                'Cod:' => 200,
+                'Mensaje:' => "Usuario no existe"
+            ];
+
+            echo json_encode($msgError);
+        }
     }
 }
 
