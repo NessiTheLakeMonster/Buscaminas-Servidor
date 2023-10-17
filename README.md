@@ -28,6 +28,86 @@ php -S 127.0.0.1:9090
 ****
 # Manual para el administrador :closed_lock_with_key:
 
+Para realizar las gestiones en modo administrador hay que iniciar sesión obligatoriamente en cada operación que se quiera realizar.
+### Iniciar sesión
+
+```JSON
+{
+    "email" : "emailDefault@gmail.com",
+    "password" : "default123"
+}
+```
+
+### Agregar usuarios
++ Ruta -> ``http://ip:puerto/admin`` con el verbo ``POST``
+
+Estructura que se debe seguir para añadir un usuario a la base de datos
+```JSON
+{
+  "email": "default@email.com",
+  "password": "default123",
+  "Personas": [
+    {
+      "email": "admin@example.com",
+      "password": "admin123",
+      "idUsuario": "",
+      "nombre": "John Doe",
+      "partidasJugadas": 10,
+      "partidasGanadas": 5,
+      "admin": 1
+    }
+  ]
+}
+```
+
+### Listar usuarios
++ Ruta para listar todos los usuarios -> ``http://ip:puerto/admin/`` con el verbo ``GET``
++ Ruta para buscar un usuario concreto -> ``http://ip:puerto/admin/[idUsuario]`` con el verbo ``GET``
+
+Estructura que se debe seguir, como es ``GET`` solo hace falta iniciar sesión
+```JSON
+{
+    "email" : "emailDefault@gmail.com",
+    "password" : "default123"
+}
+```
+
+### Borrar usuarios
++ Ruta -> ``http://ip:puerto/admin/[idUsuario]`` con el verbo ``DELETE``
+
+Estructura que se debe seguir, en este caso con ``DELETE`` solo hace falta iniciar sesión
+```JSON
+{
+    "email" : "emailDefault@gmail.com",
+    "password" : "default123"
+}
+```
+
+****
+# Estructura de la Base de Datos :memo:
+
++ Nombre de la base de datos -> _Buscaminas_
+### Tabla persona
+
+| idUsuario | password | nombre | email | partidasJugadas | partidasGanadas | admin |
+| ----------|-----------|-------|-------|-------------|--------- | ------ |
+| 1 | default123 | default | emailDefault@gmail.com | 1|1|0|
+
++ ``idUsuario`` -> Es auto incremental
++ ``admin`` -> 0 si es admin, 1 si no lo es
+
+### Tabla Partida
+
+| idPartida | idUsuario | tableroOculto | tableroJugador | finalizado |
+|-----------|-----------|---------------|----------------|------------|
+|1 | 1| [-,-,-] | [] | 0 |
+
++ ``idPartida`` -> Es auto incremental
++ ``idUsuario`` -> Clave foránea de la tabla Persona
++ ``finalizado`` -> 0 si la partida ha finalizado, 1 si no finalizó aún
+
+***
+
 # Enunciado :books:
 
 Vamos a realizar una aplicación WEB que permita gestionar partidas de buscamina. La aplicación guardará las partidas activas y el histórico de las partidas jugadas (hayan sido ganadas o perdidas); también se contabilizará la cantidad de partidas ganadas.
