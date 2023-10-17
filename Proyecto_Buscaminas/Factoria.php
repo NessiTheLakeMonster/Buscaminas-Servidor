@@ -16,8 +16,4 @@ class Factoria {
         return $part;
     }
 
-    static function crearTablero($cas, $min) {
-        $tab = new Tablero($cas, $min);
-        return $tab;
-    }
 }

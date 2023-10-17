@@ -4,6 +4,8 @@ require_once __DIR__ . '/Controllers/Controlador.php';
 require_once __DIR__ . '/Controllers/Controlador_Usuario.php';
 require_once __DIR__ . '/Databases/Conexion.php';
 require_once __DIR__ . '/Model/Persona.php';
+require_once __DIR__ . '/Model/Partida.php';
+require_once __DIR__ . '/Model/Tablero.php';
 
 header("Content-Type:application/json");
 $requestMethod = $_SERVER["REQUEST_METHOD"];
@@ -42,6 +44,40 @@ if ($requestMethod == 'GET') {
 
         // Función GET para los jugadores
     } else if ($argus[1] == 'jugar') {
+        // Creación de una nueva partida de un usuario
+        $data = json_decode($datosRecibidos, true);
+
+        $data[0] = Controlador::login(
+            $data['email'],
+            $data['password']
+        );
+
+        if ($data[0] !== null) {
+            // Usuario elige el tamaño y las minas de su tablero
+            if (is_numeric($argus[2]) && is_numeric($argus[3])) {
+                $data[1] = Controlador::crearPartida(
+                    Factoria::crearPartida(
+                        " ",
+                        $data[0] -> getIdUsuario(),
+                        "[]",
+                        "[]",
+                        1
+                    )
+                );
+                
+                // El tablero se crea por defecto con 10 casillas y 2 minas
+            } else if ($argus[2] == null && $argus[3] == null) {
+
+            }
+
+        } else {
+            $msgError = [
+                'Cod:' => 200,
+                'Mensaje:' => "Usuario no existe"
+            ];
+
+            echo json_encode($msgError);
+        }
     }
 }
 

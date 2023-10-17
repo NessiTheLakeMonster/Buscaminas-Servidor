@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '\..\Databases\Conexion.php';
 require_once __DIR__ . '\..\Model\Persona.php';
+require_once __DIR__ . '\..\Model\Partida.php';
+require_once __DIR__ . '\..\Model\Tablero.php';
 
 class Controlador
 {
@@ -25,7 +27,7 @@ class Controlador
             'Insercion: ' =>  $insercion
         ];
         echo json_encode($respuesta);
-    }
+    } 
 
     static function allPartidas()
     {
@@ -47,19 +49,26 @@ class Controlador
         echo json_encode($respuesta);
     }
 
+    static function partidaByIdUsuario($id)
+    {
+    }
+
     // ----------------------- FUNCION DE TABLERO ------------------------
 
     /* static function crearTablero($tab)
     {
-        if ($tab['casillas'] == null || $tab['minas'] == null) {
+        $casillas = $tab -> getCasillas();
+        $minas = $tab -> getMinas();
+
+        if ($casillas == null || $minas == null) {
             $t = Factoria::crearTablero(
                 Constantes::$defaultCasillas,
                 Constantes::$defaultMinas
             );
         } else {
             $t = Factoria::crearTablero(
-                $tab['casillas'],
-                $tab['minas']
+                $casillas,
+                $minas
             );
         }
 
@@ -122,5 +131,27 @@ class Controlador
         }
 
         return $admin;
+    }
+
+    /**
+     * Función que comprueba si la partida pasada esta acabada o no
+     * 
+     * Si el usuario no tiene partida abierta valdrá 0
+     * Si el usuario tiene partida abierta valdrá 1
+     * 
+     * @param Partida $partida
+     * @return boolean
+     */
+    static function checkFinalizado($partida)
+    {
+        $fin = false;
+
+        if ($partida->getFinalizado() == 0) {
+            $fin = true;
+        } else {
+            $fin = false;
+        }
+
+        return $fin;
     }
 }
