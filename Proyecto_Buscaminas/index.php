@@ -41,8 +41,7 @@ if ($requestMethod == 'GET') {
         }
 
         // Función GET para los jugadores
-    } else {
-        // codigo para el jugador
+    } else if ($argus[1] == 'jugar') {
     }
 }
 
@@ -77,6 +76,7 @@ if ($requestMethod == 'POST') {
 
             echo json_encode($msgError);
         }
+    } else if ($argus[1] == 'jugar') {
     }
 }
 

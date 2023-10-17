@@ -10,46 +10,61 @@ class Controlador
     {
         if (Conexion::insertarPartida($p)) {
             $insercion = true;
-
             $cod = 201;
             $msg = 'TODO OK';
-
-            header(Constantes::$headerMssg . $cod . ' ' . $msg);
-            $respuesta = [
-                'Cod: ' => $cod,
-                'Mensaje: ' => $msg,
-                'Inserccion: ' =>  $insercion
-            ];
-            echo json_encode($respuesta);
         } else {
             $insercion = false;
-
-            $cod = 201;
-            $msg = 'NO SE PUDO CREAR LA PARTIDA';
-
-            header(Constantes::$headerMssg . $cod . ' ' . $msg);
-            $respuesta = [
-                'Cod: ' => $cod,
-                'Mensaje: ' => $msg,
-                'Inserccion: ' =>  $insercion
-            ];
-            echo json_encode($respuesta);
+            $cod = 400;
+            $msg = 'No se pudo crear la partida';
         }
+
+        header(Constantes::$headerMssg . $cod . ' ' . $msg);
+        $respuesta = [
+            'Cod: ' => $cod,
+            'Mensaje: ' => $msg,
+            'Insercion: ' =>  $insercion
+        ];
+        echo json_encode($respuesta);
     }
 
     static function allPartidas()
     {
-        $arrayPartidas = Conexion::seleccionarTodasPartidas();
-        $cod = 201;
-        $mes = "TODO OK";
+        if ($arrayPartidas = Conexion::seleccionarTodasPartidas()) {
+            $cod = 201;
+            $mes = "TODO OK";
+        } else {
+            $cod = 400;
+            $mes = "ERROR";
+        }
+
         header(Constantes::$headerMssg . $cod . ' ' . $mes);
         $respuesta = [
             'Cod:' => $cod,
             'Mensaje:' => $mes,
             'Personas' => $arrayPartidas
         ];
+
         echo json_encode($respuesta);
     }
+
+    // ----------------------- FUNCION DE TABLERO ------------------------
+
+    /* static function crearTablero($tab)
+    {
+        if ($tab['casillas'] == null || $tab['minas'] == null) {
+            $t = Factoria::crearTablero(
+                Constantes::$defaultCasillas,
+                Constantes::$defaultMinas
+            );
+        } else {
+            $t = Factoria::crearTablero(
+                $tab['casillas'],
+                $tab['minas']
+            );
+        }
+
+        return $t;
+    } */
 
     // ----------------------- FUNCION DE LOGIN --------------------------
 

@@ -14,7 +14,7 @@ class Controlador_Usuario
         } else {
             $insercion = false;
             $cod = 400;
-            $mes = "ERROR";
+            $mes = "No se pudo crear el usuario";
         }
 
         header(Constantes::$headerMssg . $cod . ' ' . $mes);

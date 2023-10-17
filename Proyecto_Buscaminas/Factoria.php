@@ -2,6 +2,7 @@
 
 require __DIR__.'\Model\Persona.php';
 require __DIR__.'\Model\Partida.php';
+require __DIR__.'\Model\Tablero.php';
 
 class Factoria {
 
@@ -13,5 +14,10 @@ class Factoria {
     static function crearPartida($idPart, $idUsu, $tabO, $tabJ, $fin) {
         $part = new Partida($idPart, $idUsu, $tabO, $tabJ, $fin);
         return $part;
+    }
+
+    static function crearTablero($cas, $min) {
+        $tab = new Tablero($cas, $min);
+        return $tab;
     }
 }
