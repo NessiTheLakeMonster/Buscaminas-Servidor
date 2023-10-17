@@ -24,16 +24,16 @@ $tab2 = $p->getTableroOculto();
 print_r($tab2);
 
 $tabArr = Controlador::strToArray($tab);
-$p -> setTableroJugador($tabArr);
+$p->setTableroJugador($tabArr);
 print_r($tabArr);
 
 $tabArr2 = Controlador::strToArray($tab2);
-$p -> setTableroOculto($tabArr2);
+$p->setTableroOculto($tabArr2);
 print_r($tabArr2);
 
-$new = $p -> destaparPista(3);
+$new = $p->destaparPista(3);
 print_r(count($new));
-$p -> setTableroJugador($new);
+$p->setTableroJugador($new);
 print_r($new);
 
 $tabStr = Controlador::arrayToStr($new);
@@ -90,16 +90,14 @@ if ($requestMethod == 'GET') {
             // Usuario elige el tamaño y las minas de su tablero
             if (is_numeric($argus[2]) && is_numeric($argus[3])) {
                 $tabO = $p->inicializarTableroOculto($argus[2], $argus[3]);
-                $tabO_str = implode(",", $tabO);
+                $tabO_str = Controlador::arrayToStr($tabO);
                 $tabJ = $p->inicializarTableroJugador($argus[2]);
-                $tabJ_str = implode(",", $tabJ);
+                $tabJ_str = Controlador::arrayToStr($tabJ);
 
                 $p = Controlador::crearPartida(
                     Factoria::crearPartida(
                         ['idPartida'],
                         $data[0]->getIdUsuario(),
-                        /* "[" . $tabO_str . "]",
-                        "[" . $tabJ_str . "]", */
                         $tabO_str,
                         $tabJ_str,
                         1
@@ -109,16 +107,16 @@ if ($requestMethod == 'GET') {
                 // El tablero se crea por defecto con 10 casillas y 2 minas (por defecto)
             } else if ($argus[2] == null && $argus[3] == null) {
                 $tabO = $p->inicializarTableroOculto(Constantes::$defaultCasillas, Constantes::$defaultMinas);
-                $tabO_str = implode(",", $tabO);
+                $tabO_str = Controlador::arrayToStr($tabO);
                 $tabJ = $p->inicializarTableroJugador(Constantes::$defaultCasillas);
-                $tabJ_str = implode(",", $tabJ);
+                $tabJ_str = Controlador::arrayToStr($tabJ);
 
                 $p = Controlador::crearPartida(
                     Factoria::crearPartida(
                         ['idPartida'],
                         $data[0]->getIdUsuario(),
-                        "[" . $tabO_str . "]",
-                        "[" . $tabJ_str . "]",
+                        $tabO_str,
+                        $tabJ_str,
                         1
                     )
                 );
@@ -175,26 +173,34 @@ if ($requestMethod == 'POST') {
             $data['password']
         );
 
+        print_r($data);
+
         if ($data[0] !== null) {
             if ($argus[1] !== null) {
 
                 $partida = Controlador::partidaById($argus[2]);
 
+                $partida = Factoria::crearPartida(
+                    $partida->getIdPartida(),
+                    $partida->getIdUsuario(),
+                    $partida->getTableroOculto(),
+                    $partida->getTableroJugador(),
+                    $partida->getFinalizado()
+                );
+
+                print_r($partida);
+
                 // Compruebo que la partida que va a jugar el usuario es suya
                 if ($partida->getIdUsuario() == $data[0]->getIdUsuario() || $partida == null) {
-                    $partida = Factoria::crearPartida(
-                        $partida->getIdPartida(),
-                        $partida->getIdUsuario(),
-                        $partida->getTableroOculto(),
-                        $partida->getTableroJugador(),
-                        $partida->getFinalizado()
-                    );
 
-                    $newTablero = $partida -> destaparPista($argus[3]);
 
-                    Conexion::updateTableroJugador($newTablero, $data[1]['Posicion']);
-                    print_r($newTablero);
+                    $newTableroOculto = $partida->getTableroOculto();
+                    print_r($newTableroOculto);
 
+                    $newTablero = $partida->destaparPista($argus[3]);
+
+                    /* Conexion::updateTableroJugador($newTablero, $data[1]['Posicion']);
+                    print_r($newTablero); */
                 } else {
                     $msgError = [
                         'Cod:' => 201,
@@ -203,8 +209,6 @@ if ($requestMethod == 'POST') {
 
                     echo json_encode($msgError);
                 }
-                
-                
             }
         } else {
             $msgError = [

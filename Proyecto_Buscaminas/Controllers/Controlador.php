@@ -54,6 +54,8 @@ class Controlador
         if ($partida = Conexion::seleccionarPartida($id)) {
             $cod = 201;
             $mes = "TODO OK";
+
+            return $partida;
         } else {
             $cod = 400;
             $mes = "ERROR";
@@ -68,7 +70,7 @@ class Controlador
 
         echo json_encode($respuesta);
 
-        return $partida;
+        
     }
 
     static function updateTablero($tabStr, $id)
