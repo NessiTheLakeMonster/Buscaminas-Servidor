@@ -204,6 +204,36 @@ class Conexion
         return $correcto;
     }
 
+    public static function updatePartidasJugadas($partJ, $idUsu)
+    {
+        self::conectar();
+        $correcto = false;
+
+        if (!self::$conexion) {
+            echo 'Error al conectar a MySQL';
+        } else {
+            $query = Constantes::$updatePartidasJugadas;
+            $stmt = self::$conexion->prepare($query);
+
+            $stmt->bind_param(
+                "ii",
+                $partJ,
+                $idUsu
+            );
+
+            try {
+                if ($stmt->execute()) {
+                    $correcto = true;
+                }
+            } catch (Exception $e) {
+                echo 'No se pudo actualizar' . $e->getMessage();
+                $correcto = false;
+            }
+        }
+        self::desconectar();
+        return $correcto;
+    }
+
     /* ---------------------- CRUD TABLA PERSONA ------------------------------------ */
 
     public static function seleccionarPersona($idPers)
@@ -402,20 +432,18 @@ class Conexion
         return $correcto;
     }
 
-    public static function updatePartidasJugadas($partJ, $idUsu)
+    public static function updatePasswPersona($passw, $idUsu)
     {
         self::conectar();
         $correcto = false;
 
-        if (!self::$conexion) {
-            echo 'Error al conectar a MySQL';
-        } else {
-            $query = Constantes::$updatePartidasJugadas;
+        if (self::$conexion) {
+            $query = Constantes::$updatePassw;
             $stmt = self::$conexion->prepare($query);
 
             $stmt->bind_param(
-                "ii",
-                $partJ,
+                "si",
+                $passw,
                 $idUsu
             );
 

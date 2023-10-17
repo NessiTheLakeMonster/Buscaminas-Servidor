@@ -88,6 +88,28 @@ class Controlador_Usuario
         echo json_encode($respuesta);
     }
 
+    static function cambioPassw($passw, $id)
+    {
+        if (Conexion::updatePasswPersona($passw, $id)) {
+            $actualizado = true;
+            $cod = 201;
+            $mes = "TODO OK";
+        } else {
+            $actualizado = false;
+            $cod = 400;
+            $mes = "ERROR";
+        }
+
+        header(Constantes::$headerMssg . $cod . ' ' . $mes);
+        $respuesta = [
+            'Cod:' => $cod,
+            'Mensaje:' => $mes,
+            'Actualizado:' => $actualizado
+        ];
+
+        echo json_encode($respuesta);
+    }
+
     static function incrementarPartJugadas($partJ, $id)
     {
         if (Conexion::updatePartidasJugadas($partJ, $id)) {

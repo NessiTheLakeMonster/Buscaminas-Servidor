@@ -16,7 +16,7 @@ $datosRecibidos = file_get_contents("php://input");
 $argus = explode('/', $paths);
 unset($argus[0]);
 
-$p = Conexion::seleccionarPartida(18);
+/* $p = Conexion::seleccionarPartida(18);
 print_r($p);
 $tab = $p->getTableroJugador();
 print_r($tab);
@@ -37,13 +37,7 @@ $p->setTableroJugador($new);
 print_r($new);
 
 $tabStr = Controlador::arrayToStr($new);
-print_r($tabStr);
-
-
-
-
-
-/* Conexion::updateTableroJugador($tabStr, 17); */
+print_r($tabStr); */
 
 
 // Métodos con el verbo GET
@@ -253,5 +247,38 @@ if ($requestMethod == 'DELETE') {
     }
 }
 
+// Métodos con el verbo PUT
 if ($requestMethod == 'PUT') {
+    // Función PUT para los administradores
+    if ($argus[1] == 'admin') {
+        $data = json_decode($datosRecibidos, true);
+
+        $data[0] = Controlador::login(
+            $data['email'],
+            $data['password']
+        );
+
+        print_r($data[0]);
+        // Modificar la contraseña de un usuario
+        if (Controlador::checkAdmin($data[0]) == true && $data[0] !== null) {
+            if ($argus[2] == null || !is_numeric($argus[2])) {
+                $msgError = [
+                    'Cod:' => 200,
+                    'Mensaje:' => "No has especificado que usuario quieres modificar"
+                ];
+
+                echo json_encode($msgError);
+            } else {
+                Controlador_Usuario::cambioPassw($data['New password'], $argus[2]);
+                print_r($data);
+            }
+        } else {
+            $msgError = [
+                'Cod:' => 200,
+                'Mensaje:' => "Usuario no es administrador"
+            ];
+
+            echo json_encode($msgError);
+        }
+    }
 }
