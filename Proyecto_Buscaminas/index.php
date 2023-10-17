@@ -73,19 +73,19 @@ if ($requestMethod == 'GET') {
                     )
                 );
 
-                print_r($p);
-
                 // El tablero se crea por defecto con 10 casillas y 2 minas
             } else if ($argus[2] == null && $argus[3] == null) {
-                $argus[2] = Constantes::$defaultCasillas;
-                $argus[3] = Constantes::$defaultMinas;
+                $tabO = $partida->inicializarTableroOculto(Constantes::$defaultCasillas, Constantes::$defaultMinas);
+                $tabO_str = implode(",", $tabO);
+                $tabJ = $partida->inicializarTableroJugador(Constantes::$defaultCasillas);
+                $tabJ_str = implode(",", $tabJ);
 
-                $data[1] = Controlador::crearPartida(
+                $p = Controlador::crearPartida(
                     Factoria::crearPartida(
-                        " ",
+                        ['idPartida'],
                         $data[0]->getIdUsuario(),
-                        "[]",
-                        "[]",
+                        "[" . $tabO_str . "]",
+                        "[" . $tabJ_str . "]",
                         1
                     )
                 );
