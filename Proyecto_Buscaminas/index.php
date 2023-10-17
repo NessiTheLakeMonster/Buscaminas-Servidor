@@ -4,6 +4,7 @@ require_once __DIR__ . '/Controllers/Controlador.php';
 require_once __DIR__ . '/Controllers/Controlador_Usuario.php';
 require_once __DIR__ . '/Databases/Conexion.php';
 require_once __DIR__ . '/Model/Persona.php';
+require_once __DIR__ . '/Model/Partida.php';
 
 header("Content-Type:application/json");
 $requestMethod = $_SERVER["REQUEST_METHOD"];
@@ -12,6 +13,10 @@ $datosRecibidos = file_get_contents("php://input");
 
 $argus = explode('/', $paths);
 unset($argus[0]);
+
+$partida = new Partida(1, 1, "[]", "[]", 1);
+$table = $partida->inicializarTableroOculto(10, 2);
+print_r($table);
 
 // Métodos con el verbo GET
 if ($requestMethod == 'GET') {
@@ -41,8 +46,58 @@ if ($requestMethod == 'GET') {
         }
 
         // Función GET para los jugadores
-    } else {
-        // codigo para el jugador
+    } else if ($argus[1] == 'jugar') {
+        // Creación de una nueva partida de un usuario
+        $data = json_decode($datosRecibidos, true);
+
+        $data[0] = Controlador::login(
+            $data['email'],
+            $data['password']
+        );
+
+        if ($data[0] !== null) {
+            // Usuario elige el tamaño y las minas de su tablero
+            if (is_numeric($argus[2]) && is_numeric($argus[3])) {
+                $tabO = $partida->inicializarTableroOculto($argus[2], $argus[3]);
+                $tabO_str = implode(",", $tabO);
+                $tabJ = $partida->inicializarTableroJugador($argus[2]);
+                $tabJ_str = implode(",", $tabJ);
+
+                $p = Controlador::crearPartida(
+                    Factoria::crearPartida(
+                        ['idPartida'],
+                        $data[0]->getIdUsuario(),
+                        "[" . $tabO_str . "]",
+                        "[" . $tabJ_str . "]",
+                        1
+                    )
+                );
+
+                // El tablero se crea por defecto con 10 casillas y 2 minas
+            } else if ($argus[2] == null && $argus[3] == null) {
+                $tabO = $partida->inicializarTableroOculto(Constantes::$defaultCasillas, Constantes::$defaultMinas);
+                $tabO_str = implode(",", $tabO);
+                $tabJ = $partida->inicializarTableroJugador(Constantes::$defaultCasillas);
+                $tabJ_str = implode(",", $tabJ);
+
+                $p = Controlador::crearPartida(
+                    Factoria::crearPartida(
+                        ['idPartida'],
+                        $data[0]->getIdUsuario(),
+                        "[" . $tabO_str . "]",
+                        "[" . $tabJ_str . "]",
+                        1
+                    )
+                );
+            }
+        } else {
+            $msgError = [
+                'Cod:' => 200,
+                'Mensaje:' => "Usuario no existe"
+            ];
+
+            echo json_encode($msgError);
+        }
     }
 }
 
@@ -77,6 +132,7 @@ if ($requestMethod == 'POST') {
 
             echo json_encode($msgError);
         }
+    } else if ($argus[1] == 'jugar') {
     }
 }
 

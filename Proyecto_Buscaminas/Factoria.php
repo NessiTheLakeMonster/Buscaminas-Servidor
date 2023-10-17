@@ -14,4 +14,5 @@ class Factoria {
         $part = new Partida($idPart, $idUsu, $tabO, $tabJ, $fin);
         return $part;
     }
+
 }
