@@ -11,7 +11,6 @@ class Controlador_Usuario
             $insercion = true;
             $cod = 201;
             $mes = "TODO OK";
-
         } else {
             $insercion = false;
             $cod = 400;
@@ -147,6 +146,26 @@ class Controlador_Usuario
             'Mensaje: ' => $mes,
             'PartidasGanadas' => $partG
         ];
+        echo json_encode($respuesta);
+    }
+
+    static function ranking()
+    {
+        if ($arrayPersonas = Conexion::selectPersonasRanking()) {
+            $cod = 201;
+            $mes = "TODO OK";
+        } else {
+            $cod = 400;
+            $mes = "ERROR";
+        }
+
+        header(Constantes::$headerMssg . $cod . ' ' . $mes);
+        $respuesta = [
+            'Cod:' => $cod,
+            'Mensaje:' => $mes,
+            'Personas' => $arrayPersonas
+        ];
+
         echo json_encode($respuesta);
     }
 }

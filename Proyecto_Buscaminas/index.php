@@ -112,6 +112,10 @@ if ($requestMethod == 'GET') {
             header(Constantes::$headerMssg . $msgError['Cod:'] . ' ' . $msgError['Mensaje:']);
             echo json_encode($msgError);
         }
+
+
+    } else if ($argus[1] == 'ranking') {
+        Controlador_Usuario::ranking();
     }
 }
 
@@ -125,8 +129,6 @@ if ($requestMethod == 'POST') {
             $data['email'],
             $data['password']
         );
-
-        print_r($data);
 
         if (Controlador::checkAdmin($data[0]) == true && $data[0] !== null) {
             $data[1] = Controlador_Usuario::crearUsuario(
