@@ -114,6 +114,13 @@ class Partida
         return $t;
     }
 
+    /**
+     * Función que destapa una casilla del tablero del jugador
+     * y la comprara con el tablero oculto
+     * 
+     * @param $posicion
+     * @return array
+     */
     public function destaparPista($posicion)
     {
         $tabJ = $this->tableroJugador;
@@ -121,6 +128,7 @@ class Partida
 
         if ($tabO[$posicion] == '*') {
             $tabJ[$posicion] = '*';
+            $this->finalizado = true;
         } else if ($tabO[$posicion] == 0) {
             if (($posicion > 0 && $tabO[$posicion - 1] == '*') 
                 || ($posicion < count($tabO) - 1 && $tabO[$posicion + 1] == '*')) {

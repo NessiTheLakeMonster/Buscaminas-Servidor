@@ -234,6 +234,36 @@ class Conexion
         return $correcto;
     }
 
+    public static function updateFinalizado($fin, $idPart)
+    {
+        self::conectar();
+        $correcto = false;
+
+        if (!self::$conexion) {
+            echo 'Error al conectar a MySQL';
+        } else {
+            $query = Constantes::$updateFinalizado;
+            $stmt = self::$conexion->prepare($query);
+
+            $stmt->bind_param(
+                "bi",
+                $fin,
+                $idPart
+            );
+
+            try {
+                if ($stmt->execute()) {
+                    $correcto = true;
+                }
+            } catch (Exception $e) {
+                echo 'No se pudo actualizar' . $e->getMessage();
+                $correcto = false;
+            }
+        }
+        self::desconectar();
+        return $correcto;
+    }
+
     /* ---------------------- CRUD TABLA PERSONA ------------------------------------ */
 
     public static function seleccionarPersona($idPers)

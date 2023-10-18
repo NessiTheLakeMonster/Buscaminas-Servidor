@@ -170,8 +170,6 @@ if ($requestMethod == 'POST') {
             $data['password']
         );
 
-        print_r($data);
-
         if ($data[0] !== null) {
             if ($argus[1] !== null) {
 
@@ -190,14 +188,34 @@ if ($requestMethod == 'POST') {
                 // Compruebo que la partida que va a jugar el usuario es suya
                 if ($partida->getIdUsuario() == $data[0]->getIdUsuario() || $partida == null) {
 
-
                     $newTableroOculto = $partida->getTableroOculto();
                     print_r($newTableroOculto);
+                    $newTableroOcultoArr = Controlador::strToArray($newTableroOculto);
+                    print_r($newTableroOcultoArr);
+                    $partida->setTableroOculto($newTableroOcultoArr);
 
-                    $newTablero = $partida->destaparPista($argus[3]);
+                    $newTableroJugador = $partida->getTableroJugador();
+                    print_r($newTableroJugador);
+                    $newTableroJugadorArr = Controlador::strToArray($newTableroJugador);
+                    print_r($newTableroJugadorArr);
+                    $partida->setTableroJugador($newTableroJugadorArr);
 
-                    /* Conexion::updateTableroJugador($newTablero, $data[1]['Posicion']);
-                    print_r($newTablero); */
+                    print_r($partida);
+
+                    $newTableroJugadorArr = $partida->destaparPista($data['Casilla']);
+                    print_r($newTableroJugadorArr);
+                    $newTableroJugadorStr = Controlador::arrayToStr($newTableroJugadorArr);
+                    print_r($newTableroJugadorStr);
+
+                    if (Controlador::checkFinalizado($partida) == true) {
+                        Controlador::updateFin(1, $partida->getIdPartida());
+                        // Le suma 1 a las partidas jugadas por el usuario 
+                        Controlador_Usuario::incrementarPartJugadas($data[0] -> getPartidasJugadas() + 1 ,$partida->getIdUsuario());
+                    } else {
+                        Controlador::updateTablero($newTableroJugadorStr, $partida->getIdPartida());
+                    }
+
+                    
                 } else {
                     $msgError = [
                         'Cod:' => 401,
