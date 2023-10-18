@@ -16,7 +16,7 @@ $datosRecibidos = file_get_contents("php://input");
 $argus = explode('/', $paths);
 unset($argus[0]);
 
-$p = Conexion::seleccionarPartida(18);
+/* $p = Conexion::seleccionarPartida(18);
 print_r($p);
 $tab = $p->getTableroJugador();
 print_r($tab);
@@ -37,13 +37,7 @@ $p->setTableroJugador($new);
 print_r($new);
 
 $tabStr = Controlador::arrayToStr($new);
-print_r($tabStr);
-
-
-
-
-
-/* Conexion::updateTableroJugador($tabStr, 17); */
+print_r($tabStr); */
 
 
 // Métodos con el verbo GET
@@ -66,10 +60,11 @@ if ($requestMethod == 'GET') {
             }
         } else {
             $msgError = [
-                'Cod:' => 200,
+                'Cod:' => 401,
                 'Mensaje:' => "Usuario no es administrador"
             ];
 
+            header(Constantes::$headerMssg . $msgError['Cod:'] . ' ' . $msgError['Mensaje:']);
             echo json_encode($msgError);
         }
 
@@ -123,10 +118,11 @@ if ($requestMethod == 'GET') {
             }
         } else {
             $msgError = [
-                'Cod:' => 200,
+                'Cod:' => 406,
                 'Mensaje:' => "Usuario no existe"
             ];
 
+            header(Constantes::$headerMssg . $msgError['Cod:'] . ' ' . $msgError['Mensaje:']);
             echo json_encode($msgError);
         }
     }
@@ -157,10 +153,11 @@ if ($requestMethod == 'POST') {
             );
         } else {
             $msgError = [
-                'Cod:' => 200,
+                'Cod:' => 401,
                 'Mensaje:' => "Usuario no es administrador"
             ];
 
+            header(Constantes::$headerMssg . $msgError['Cod:'] . ' ' . $msgError['Mensaje:']);
             echo json_encode($msgError);
         }
 
@@ -203,19 +200,21 @@ if ($requestMethod == 'POST') {
                     print_r($newTablero); */
                 } else {
                     $msgError = [
-                        'Cod:' => 201,
+                        'Cod:' => 401,
                         'Mensaje:' => "No puedes acceder a esta partida"
                     ];
 
+                    header(Constantes::$headerMssg . $msgError['Cod:'] . ' ' . $msgError['Mensaje:']);
                     echo json_encode($msgError);
                 }
             }
         } else {
             $msgError = [
-                'Cod:' => 200,
+                'Cod:' => 406,
                 'Mensaje:' => "Usuario no existe"
             ];
 
+            header(Constantes::$headerMssg . $msgError['Cod:'] . ' ' . $msgError['Mensaje:']);
             echo json_encode($msgError);
         }
     }
@@ -234,24 +233,65 @@ if ($requestMethod == 'DELETE') {
         if (Controlador::checkAdmin($data[0]) == true && $data[0] !== null) {
             if ($argus[2] == null) {
                 $msgError = [
-                    'Cod:' => 200,
+                    'Cod:' => 406,
                     'Mensaje:' => "No has especificado que usuario quieres borrar"
                 ];
 
+                header(Constantes::$headerMssg . $msgError['Cod:'] . ' ' . $msgError['Mensaje:']);
                 echo json_encode($msgError);
             } else {
                 $data[1] = Controlador_Usuario::borrarUsuario($argus[2]);
             }
         } else {
             $msgError = [
-                'Cod:' => 200,
+                'Cod:' => 401,
                 'Mensaje:' => "Usuario no es administrador"
             ];
 
+            header(Constantes::$headerMssg . $msgError['Cod:'] . ' ' . $msgError['Mensaje:']);
             echo json_encode($msgError);
         }
     }
 }
 
+// Métodos con el verbo PUT
 if ($requestMethod == 'PUT') {
+    // Función PUT para los administradores
+    if ($argus[1] == 'admin') {
+        $data = json_decode($datosRecibidos, true);
+
+        $data[0] = Controlador::login(
+            $data['email'],
+            $data['password']
+        );
+
+        // Modificar la contraseña de un usuario
+        if (Controlador::checkAdmin($data[0]) == true && $data[0] !== null) {
+            if ($argus[2] == null || !is_numeric($argus[2])) {
+                $msgError = [
+                    'Cod:' => 406,
+                    'Mensaje:' => "No has especificado que usuario quieres modificar"
+                ];
+
+                header(Constantes::$headerMssg . $msgError['Cod:'] . ' ' . $msgError['Mensaje:']);
+                echo json_encode($msgError);
+            } else {
+                $data[1] = Controlador_Usuario::cambioPersona(
+                    $argus[2],
+                    $data['New password'],
+                    $data['New nombre'],
+                    $data['New email'],
+                    $data['New admin']
+                );
+            }
+        } else {
+            $msgError = [
+                'Cod:' => 401,
+                'Mensaje:' => "Usuario no es administrador"
+            ];
+
+            header(Constantes::$headerMssg . $msgError['Cod:'] . ' ' . $msgError['Mensaje:']);
+            echo json_encode($msgError);
+        }
+    }
 }
