@@ -3,6 +3,10 @@
 
 <a href="https://www.php.net" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/php/php-original.svg" alt="php" width="40" height="40"/> </a> 
  Desafío de Buscaminas realizado durante la asignatura de Desarrollo Web Entorno Servidor
+ 
+ + Proyecto realizado por [Inés María Barrera Llerena](https://github.com/NessiTheLakeMonster)
+
+****
 
 # Manual para el usuario :computer:
 
@@ -11,19 +15,21 @@ Para lanzar el servidor bastará con el siguiente comando
 php -S 127.0.0.1:9090  
 ```
 
-### _Rutas que se van a utilizar_
+### Creación de la partida
++ Ruta para partida personalizada -> ``http://ip:puerto/jugar/[Nº casillas]/[Nº de minas]`` con el verbo ``GET``
++ Ruta para partida por defecto -> ``http://ip:puerto/jugar/`` con el verbo ``GET``
 
-+ Creación de partidas
-+ Creación de usuarios
-+ Iniciar sesión con tu usuario
+Por defecto creará un tablero de 10 casillas con 2 minas.
 
-#### Archivo JSON
-```json
+Siempre se deberá iniciar sesión antes de crear la partida
+```JSON
 {
-    "idUsuario" : 1,
-    "idParttida" : 101
+    "email" : "emailDefault@gmail.com",
+    "password" : "default123"
 }
 ```
+
+### Jugar una partida seleccionada
 
 ****
 # Manual para el administrador :closed_lock_with_key:
@@ -83,15 +89,30 @@ Estructura que se debe seguir, en este caso con ``DELETE`` solo hace falta inici
 }
 ```
 
+### Modificar usuarios
++ Ruta -> ``http://ip:puerto/admin/[idUsuario]`` con el verbo ``PUT``
+  
+Estructura que se debe seguir, los dos primeros cambios es el usuario administrador que inicua sesión. Los demás campos pertencen a los datos que se van a actualizar del ususario el cual hemos esècificado su ID en la ruta.
+```JSON
+{
+  "email": "default@email.com",
+  "password": "default123",
+  "New password": "newpassword",
+  "New nombre" : "nombrePrueba",
+  "New email" : "email@email.nose",
+  "New admin" : true
+}
+```
+
 ****
 # Estructura de la Base de Datos :memo:
 
 + Nombre de la base de datos -> _Buscaminas_
 ### Tabla persona
 
-| idUsuario | password | nombre | email | partidasJugadas | partidasGanadas | admin |
-| ----------|-----------|-------|-------|-------------|--------- | ------ |
-| 1 | default123 | default | email@gmail.com | 1|1|0|
+| idUsuario | password   | nombre  | email           | partidasJugadas | partidasGanadas | admin |
+| --------- | ---------- | ------- | --------------- | --------------- | --------------- | ----- |
+| 1         | default123 | default | email@gmail.com | 1               | 1               | 0     |
 
 + ``idUsuario`` -> Es auto incremental
 + ``admin`` -> 0 si es admin, 1 si no lo es
@@ -99,8 +120,8 @@ Estructura que se debe seguir, en este caso con ``DELETE`` solo hace falta inici
 ### Tabla Partida
 
 | idPartida | idUsuario | tableroOculto | tableroJugador | finalizado |
-|-----------|-----------|---------------|----------------|------------|
-|1 | 1| [-,-,-] | [] | 0 |
+| --------- | --------- | ------------- | -------------- | ---------- |
+| 1         | 1         | [-,-,-]       | []             | 0          |
 
 + ``idPartida`` -> Es auto incremental
 + ``idUsuario`` -> Clave foránea de la tabla Persona
