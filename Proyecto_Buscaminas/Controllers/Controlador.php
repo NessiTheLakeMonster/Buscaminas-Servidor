@@ -69,8 +69,6 @@ class Controlador
         ];
 
         echo json_encode($respuesta);
-
-        
     }
 
     static function updateTablero($tabStr, $id)
@@ -83,7 +81,24 @@ class Controlador
             $mes = "ERROR";
         }
 
-        $tabArr = explode(',', $tabStr);
+        header(Constantes::$headerMssg . $cod . ' ' . $mes);
+        $respuesta = [
+            'Cod: ' => $cod,
+            'Mensaje: ' => $mes,
+            'Partida' => $partida
+        ];
+        echo json_encode($respuesta);
+    }
+
+    static function updateFin($fin, $id)
+    {
+        if ($partida = Conexion::updateFinalizado($fin, $id)) {
+            $cod = 201;
+            $mes = "TODO OK";
+        } else {
+            $cod = 400;
+            $mes = "ERROR";
+        }
 
         header(Constantes::$headerMssg . $cod . ' ' . $mes);
         $respuesta = [
@@ -179,7 +194,7 @@ class Controlador
     {
         $fin = false;
 
-        if ($partida->getFinalizado() == 0) {
+        if ($partida->getFinalizado() == 1) {
             $fin = true;
         } else {
             $fin = false;

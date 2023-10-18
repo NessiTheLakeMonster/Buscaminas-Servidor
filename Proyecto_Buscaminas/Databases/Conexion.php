@@ -123,12 +123,14 @@ class Conexion
             $query = Constantes::$insertPartida;
             $stmt = self::$conexion->prepare($query);
 
+            $idUsuario = $partida->getIdUsuario();
             $tableroOculto = $partida->getTableroOculto();
             $tableroJugador = $partida->getTableroJugador();
             $finalizado = $partida->getFinalizado();
 
             $stmt->bind_param(
-                "ssb",
+                "issi",
+                $idUsuario,
                 $tableroOculto,
                 $tableroJugador,
                 $finalizado
@@ -233,6 +235,67 @@ class Conexion
         self::desconectar();
         return $correcto;
     }
+
+    public static function updatePartidasGanadas($partG, $idUsu)
+    {
+        self::conectar();
+        $correcto = false;
+
+        if (!self::$conexion) {
+            echo 'Error al conectar a MySQL';
+        } else {
+            $query = Constantes::$updatePartidasJGanadas;
+            $stmt = self::$conexion->prepare($query);
+
+            $stmt->bind_param(
+                "ii",
+                $partG,
+                $idUsu
+            );
+
+            try {
+                if ($stmt->execute()) {
+                    $correcto = true;
+                }
+            } catch (Exception $e) {
+                echo 'No se pudo actualizar' . $e->getMessage();
+                $correcto = false;
+            }
+        }
+        self::desconectar();
+        return $correcto;
+    }
+
+    public static function updateFinalizado($fin, $idPart)
+    {
+        self::conectar();
+        $correcto = false;
+
+        if (!self::$conexion) {
+            echo 'Error al conectar a MySQL';
+        } else {
+            $query = Constantes::$updateFinalizado;
+            $stmt = self::$conexion->prepare($query);
+
+            $stmt->bind_param(
+                "ii",
+                $fin,
+                $idPart
+            );
+
+            try {
+                if ($stmt->execute()) {
+                    $correcto = true;
+                }
+            } catch (Exception $e) {
+                echo 'No se pudo actualizar' . $e->getMessage();
+                $correcto = false;
+            }
+        }
+        self::desconectar();
+        return $correcto;
+    }
+
 
     /* ---------------------- CRUD TABLA PERSONA ------------------------------------ */
 
@@ -381,7 +444,7 @@ class Conexion
             $adm = $persona->getAdmin();
 
             $stmt->bind_param(
-                "sssiib",
+                "sssiii",
                 $pass,
                 $nom,
                 $em,

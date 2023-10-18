@@ -114,6 +114,13 @@ class Partida
         return $t;
     }
 
+    /**
+     * Función que destapa una casilla del tablero del jugador
+     * y la comprara con el tablero oculto
+     * 
+     * @param $posicion
+     * @return array
+     */
     public function destaparPista($posicion)
     {
         $tabJ = $this->tableroJugador;
@@ -121,15 +128,46 @@ class Partida
 
         if ($tabO[$posicion] == '*') {
             $tabJ[$posicion] = '*';
+            $this->finalizado = true;
         } else if ($tabO[$posicion] == 0) {
-            if (($posicion > 0 && $tabO[$posicion - 1] == '*') 
-                || ($posicion < count($tabO) - 1 && $tabO[$posicion + 1] == '*')) {
+            if (($posicion > 0 && $tabO[$posicion - 1] == '*')
+                || ($posicion < count($tabO) - 1 && $tabO[$posicion + 1] == '*')
+            ) {
                 $tabJ[$posicion] = 1;
             } else {
                 $tabJ[$posicion] = 0;
             }
+        } else {
+            $tabJ[$posicion] = $tabO[$posicion];
         }
 
         return $tabJ;
+    }
+
+    public function comprobarVictoria($tabO, $tabJ)
+    {
+        $ganar = false;
+
+        // Cuenta las casiilas destapadas
+        $casillaDestapada = 0;
+        for ($i = 0; $i < count($tabJ); $i++) {
+            if ($tabJ[$i] !== null && $tabJ[$i] !== '-') {
+                $casillaDestapada++;
+            }
+        }
+
+        // Cuenta las casillas sin mina
+        $casillasSinMina = 0;
+        for ($i = 0; $i < count($tabO); $i++) {
+            if ($tabO[$i] !== '*') {
+                $casillasSinMina++;
+            }
+        }
+
+        if ($casillaDestapada == $casillasSinMina) {
+            $ganar = true;
+        }
+
+        return $ganar;
     }
 }
