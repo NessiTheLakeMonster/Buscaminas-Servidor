@@ -11,6 +11,7 @@ require_once __DIR__ . '/Constantes.php';
 header("Content-Type:application/json");
 $requestMethod = $_SERVER["REQUEST_METHOD"];
 $paths = $_SERVER['REQUEST_URI'];
+
 $datosRecibidos = file_get_contents("php://input");
 
 $argus = explode('/', $paths);
@@ -56,7 +57,6 @@ if ($requestMethod == 'GET') {
 
         $p = new Partida(1, 1, 1, 1, 1);
         $data[2] = $p;
-
 
         if ($data[0] !== null) {
             // Usuario elige el tamaño y las minas de su tablero
@@ -113,7 +113,7 @@ if ($requestMethod == 'GET') {
             echo json_encode($msgError);
         }
 
-
+        // Listar el ranking de los jugadores
     } else if ($argus[1] == 'ranking') {
         Controlador_Usuario::ranking();
     }
@@ -142,7 +142,6 @@ if ($requestMethod == 'POST') {
                     $data['Personas']['admin']
                 )
             );
-
         } else {
             $msgError = [
                 'Cod:' => 401,
@@ -270,8 +269,10 @@ if ($requestMethod == 'POST') {
     }
 }
 
-if ($requestMethod == 'DELETE') {
 
+// Métodos con el verbo DELETE
+if ($requestMethod == 'DELETE') {
+    
     if ($argus[1] == 'admin') {
         $data = json_decode($datosRecibidos, true);
 
@@ -281,7 +282,7 @@ if ($requestMethod == 'DELETE') {
         );
 
         if (Controlador::checkAdmin($data[0]) == true && $data[0] !== null) {
-            if ($argus[2] == null) {
+            if ($argus[2] == null || !is_numeric($argus[2])) {
                 $msgError = [
                     'Cod:' => 406,
                     'Mensaje:' => "No has especificado que usuario quieres borrar"

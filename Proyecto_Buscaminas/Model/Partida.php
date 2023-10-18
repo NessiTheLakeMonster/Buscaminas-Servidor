@@ -144,6 +144,14 @@ class Partida
         return $tabJ;
     }
 
+    /**
+     * Función que destapa una casilla del tablero del jugador
+     * y la comprara con el tablero oculto
+     * 
+     * @param $tabO
+     * @param $tabJ
+     * @return array
+     */
     public function comprobarVictoria($tabO, $tabJ)
     {
         $ganar = false;

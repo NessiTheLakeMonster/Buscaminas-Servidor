@@ -43,6 +43,9 @@ Además se debe añadir el JSON donde el usuario inicia sesión y además dice q
 }
 ```
 
+En caso de querer ser un cagao y rendirse, se deberá modificar la ruta 
++ Ruta -> ``http://ip:puerto/jugar/[idPartida]/rendirse`` con el verbo ``POST``
+
 ### Ver el ranking de las personas que han jugado
 + Ruta -> ``http://ip:puerto/ranking`` con el verbo ``GET``
 
