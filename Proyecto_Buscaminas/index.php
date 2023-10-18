@@ -269,8 +269,14 @@ if ($requestMethod == 'PUT') {
 
                 echo json_encode($msgError);
             } else {
-                Controlador_Usuario::cambioPassw($data['New password'], $argus[2]);
-                print_r($data);
+                $data[1] = Controlador_Usuario::cambioPersona(
+                    $argus[2],
+                    $data['New password'],
+                    $data['New nombre'],
+                    $data['New email'],
+                    $data['New admin']
+                );
+                print_r($data[1]);
             }
         } else {
             $msgError = [

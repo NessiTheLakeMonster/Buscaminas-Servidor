@@ -432,7 +432,7 @@ class Conexion
         return $correcto;
     }
 
-    public static function updatePasswPersona($passw, $idUsu)
+    public static function updatePersona($idUsu, $pass, $nom, $email, $admin)
     {
         self::conectar();
         $correcto = false;
@@ -442,8 +442,11 @@ class Conexion
             $stmt = self::$conexion->prepare($query);
 
             $stmt->bind_param(
-                "si",
-                $passw,
+                "sssii",
+                $pass,
+                $nom,
+                $email,
+                $admin,
                 $idUsu
             );
 

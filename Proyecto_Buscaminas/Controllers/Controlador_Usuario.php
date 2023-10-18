@@ -88,9 +88,9 @@ class Controlador_Usuario
         echo json_encode($respuesta);
     }
 
-    static function cambioPassw($passw, $id)
+    static function cambioPersona($idUsu, $pass, $nom, $email, $admin)
     {
-        if (Conexion::updatePasswPersona($passw, $id)) {
+        if (Conexion::updatePersona($idUsu, $pass, $nom, $email, $admin)) {
             $actualizado = true;
             $cod = 201;
             $mes = "TODO OK";
