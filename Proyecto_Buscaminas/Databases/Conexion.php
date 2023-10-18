@@ -22,8 +22,6 @@ class Conexion
             echo "Fallo al conectar a MySQL: (" . $e->getMessage() . ")";
         }
 
-        /* echo self::$conexion->host_info . "<br>"; */
-
         return self::$conexion;
     }
 
