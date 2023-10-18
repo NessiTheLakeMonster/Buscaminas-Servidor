@@ -31,6 +31,21 @@ Siempre se deberá iniciar sesión antes de crear la partida
 
 ### Jugar una partida seleccionada
 
+Primeramente el usuario deberá entrar en una partida abierta y que además la partida le pertenezca.
++ Ruta -> ``http://ip:puerto/jugar/[idPartida]`` con el verbo ``POST``
+
+Además se debe añadir el JSON donde el usuario inicia sesión y además dice que casilla va a destapar.
+```JSON
+{
+    "email" : "emailDefault@gmail.com",
+    "password" : "default123",
+    "Casilla" : [numero de casilla que quieras destapar]
+}
+```
+
+### Ver el ranking de las personas que han jugado
++ Ruta -> ``http://ip:puerto/ranking`` con el verbo ``GET``
+
 ****
 # Manual para el administrador :closed_lock_with_key:
 
@@ -51,18 +66,16 @@ Estructura que se debe seguir para añadir un usuario a la base de datos
 ```JSON
 {
   "email": "default@email.com",
-  "password": "default123",
-  "Personas": [
-    {
-      "email": "admin@example.com",
-      "password": "admin123",
-      "idUsuario": "",
-      "nombre": "John Doe",
-      "partidasJugadas": 10,
-      "partidasGanadas": 5,
-      "admin": 1
-    }
-  ]
+  "password": "ines12",
+  "Personas": {
+    "idUsuario": "",
+    "password": "testpassword",
+    "nombre": "Test User",
+    "email": "test@example.com",
+    "partidasJugadas": 10,
+    "partidasGanadas": 5,
+    "admin": false
+  }
 }
 ```
 
@@ -92,7 +105,7 @@ Estructura que se debe seguir, en este caso con ``DELETE`` solo hace falta inici
 ### Modificar usuarios
 + Ruta -> ``http://ip:puerto/admin/[idUsuario]`` con el verbo ``PUT``
   
-Estructura que se debe seguir, los dos primeros cambios es el usuario administrador que inicua sesión. Los demás campos pertencen a los datos que se van a actualizar del ususario el cual hemos esècificado su ID en la ruta.
+Estructura que se debe seguir, los dos primeros cambios es el usuario administrador que inicua sesión. Los demás campos pertencen a los datos que se van a actualizar del ususario el cual hemos especificado su ID en la ruta.
 ```JSON
 {
   "email": "default@email.com",
@@ -103,30 +116,6 @@ Estructura que se debe seguir, los dos primeros cambios es el usuario administra
   "New admin" : true
 }
 ```
-
-****
-# Estructura de la Base de Datos :memo:
-
-+ Nombre de la base de datos -> _Buscaminas_
-### Tabla persona
-
-| idUsuario | password   | nombre  | email           | partidasJugadas | partidasGanadas | admin |
-| --------- | ---------- | ------- | --------------- | --------------- | --------------- | ----- |
-| 1         | default123 | default | email@gmail.com | 1               | 1               | 0     |
-
-+ ``idUsuario`` -> Es auto incremental
-+ ``admin`` -> 0 si es admin, 1 si no lo es
-
-### Tabla Partida
-
-| idPartida | idUsuario | tableroOculto | tableroJugador | finalizado |
-| --------- | --------- | ------------- | -------------- | ---------- |
-| 1         | 1         | [-,-,-]       | []             | 0          |
-
-+ ``idPartida`` -> Es auto incremental
-+ ``idUsuario`` -> Clave foránea de la tabla Persona
-+ ``finalizado`` -> 0 si la partida ha finalizado, 1 si no finalizó aún
-
 ***
 
 # Enunciado :books:
@@ -183,15 +172,3 @@ El jugador también podrá solicitar un cambio de contraseña, para ello debe pr
 
 Finalmente el jugador podrá solicitar el ranking de jugadores. Se le devolverá una lista de usuarios ordenada de mayor a menor de más ganadas a menos. De igual manera el verbo y la forma de solicitar el ranking depende del programador.
 
-------
-# Ejercicio buscaminas
-
-clase buscaminas
-iniciartablero()
-colocarminar(2)
-generarpista()
-
-
-
-verbo get para crear la partida
-verbo port se juega con el
