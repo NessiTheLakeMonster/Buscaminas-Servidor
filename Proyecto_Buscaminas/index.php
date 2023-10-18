@@ -80,7 +80,7 @@ if ($requestMethod == 'GET') {
 
         $p = new Partida(1, 1, 1, 1, 1);
         $data[2] = $p;
-        
+
 
         if ($data[0] !== null) {
             // Usuario elige el tamaño y las minas de su tablero
@@ -184,8 +184,6 @@ if ($requestMethod == 'POST') {
                     $partida->getFinalizado()
                 );
 
-                print_r($partida);
-
                 // Compruebo que la partida que va a jugar el usuario es suya
                 if ($partida->getIdUsuario() == $data[0]->getIdUsuario() || $partida == null) {
 
@@ -210,7 +208,7 @@ if ($requestMethod == 'POST') {
                                 'Cod:' => 401,
                                 'Mensaje:' => "Te has rendido"
                             ];
-    
+
                             header(Constantes::$headerMssg . $msgError['Cod:'] . ' ' . $msgError['Mensaje:']);
                             echo json_encode($msgError);
                         }
@@ -224,19 +222,31 @@ if ($requestMethod == 'POST') {
                         $newTableroJugadorArr = Controlador::strToArray($newTableroJugador);
                         $partida->setTableroJugador($newTableroJugadorArr);
 
-                        // Destapo la casilla que ha elegido el usuario
-                        $newTableroJugadorArr = $partida->destaparPista($data['Casilla']);
+                        if (!is_numeric($data['Casilla'])) {
+                            $msgError = [
+                                'Cod:' => 406,
+                                'Mensaje:' => "No has especificado la casilla que quieres destapar"
+                            ];
 
-                        // Convierto los tableros de array a string
-                        $newTableroJugadorStr = Controlador::arrayToStr($newTableroJugadorArr);
-
-                        if (Controlador::checkFinalizado($partida) == true) {
-                            // Cambia el estado de finalizado a la partida
-                            Controlador::updateFin(1, $partida->getIdPartida());
-                            // Le suma 1 a las partidas jugadas por el usuario 
-                            Controlador_Usuario::incrementarPartJugadas($data[0]->getPartidasJugadas() + 1, $partida->getIdUsuario());
+                            header(Constantes::$headerMssg . $msgError['Cod:'] . ' ' . $msgError['Mensaje:']);
+                            echo json_encode($msgError);
                         } else {
-                            Controlador::updateTablero($newTableroJugadorStr, $partida->getIdPartida());
+                            // Destapo la casilla que ha elegido el usuario
+                            $newTableroJugadorArr = $partida->destaparPista($data['Casilla']);
+
+                            // Convierto los tableros de array a string
+                            $newTableroJugadorStr = Controlador::arrayToStr($newTableroJugadorArr);
+
+                            if (Controlador::checkFinalizado($partida) == true) {
+                                // Cambia el estado de finalizado a la partida
+                                Controlador::updateFin(1, $partida->getIdPartida());
+                                // Le suma 1 a las partidas jugadas por el usuario 
+                                Controlador_Usuario::incrementarPartJugadas($data[0]->getPartidasJugadas() + 1, $partida->getIdUsuario());
+                                Controlador::updateTablero($newTableroJugadorStr, $partida->getIdPartida());
+                            } else {
+                                // Simplemente actualiza el tablero del jugador
+                                Controlador::updateTablero($newTableroJugadorStr, $partida->getIdPartida());
+                            }
                         }
                     }
                 } else {
