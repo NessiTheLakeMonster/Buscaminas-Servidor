@@ -188,35 +188,56 @@ if ($requestMethod == 'POST') {
                 // Compruebo que la partida que va a jugar el usuario es suya
                 if ($partida->getIdUsuario() == $data[0]->getIdUsuario() || $partida == null) {
 
-                    $newTableroOculto = $partida->getTableroOculto();
-                    print_r($newTableroOculto);
-                    $newTableroOcultoArr = Controlador::strToArray($newTableroOculto);
-                    print_r($newTableroOcultoArr);
-                    $partida->setTableroOculto($newTableroOcultoArr);
+                    // Compruebo que la partida no ha finalizado
+                    if ($partida->getFinalizado() == true) {
+                        $msgError = [
+                            'Cod:' => 401,
+                            'Mensaje:' => "La partida ya ha finalizado"
+                        ];
 
-                    $newTableroJugador = $partida->getTableroJugador();
-                    print_r($newTableroJugador);
-                    $newTableroJugadorArr = Controlador::strToArray($newTableroJugador);
-                    print_r($newTableroJugadorArr);
-                    $partida->setTableroJugador($newTableroJugadorArr);
-
-                    print_r($partida);
-
-                    $newTableroJugadorArr = $partida->destaparPista($data['Casilla']);
-                    print_r($newTableroJugadorArr);
-                    $newTableroJugadorStr = Controlador::arrayToStr($newTableroJugadorArr);
-                    print_r($newTableroJugadorStr);
-
-                    if (Controlador::checkFinalizado($partida) == true) {
-                        // Cambia el estado de finalizado a la partida
-                        Controlador::updateFin(1, $partida->getIdPartida());
-                        // Le suma 1 a las partidas jugadas por el usuario 
-                        Controlador_Usuario::incrementarPartJugadas($data[0] -> getPartidasJugadas() + 1 ,$partida->getIdUsuario());
+                        header(Constantes::$headerMssg . $msgError['Cod:'] . ' ' . $msgError['Mensaje:']);
+                        echo json_encode($msgError);
                     } else {
-                        Controlador::updateTablero($newTableroJugadorStr, $partida->getIdPartida());
-                    }
 
-                    
+                        if ($argus[3] == 'rendirse') {
+                            // Cambia el estado de finalizado a la partida
+                            Controlador::updateFin(1, $partida->getIdPartida());
+                            // Le suma 1 a las partidas jugadas por el usuario 
+                            Controlador_Usuario::incrementarPartJugadas($data[0]->getPartidasJugadas() + 1, $partida->getIdUsuario());
+
+                            $msgError = [
+                                'Cod:' => 401,
+                                'Mensaje:' => "Te has rendido"
+                            ];
+    
+                            header(Constantes::$headerMssg . $msgError['Cod:'] . ' ' . $msgError['Mensaje:']);
+                            echo json_encode($msgError);
+                        }
+
+                        // Convierto los tableros de string a array
+                        $newTableroOculto = $partida->getTableroOculto();
+                        $newTableroOcultoArr = Controlador::strToArray($newTableroOculto);
+                        $partida->setTableroOculto($newTableroOcultoArr);
+
+                        $newTableroJugador = $partida->getTableroJugador();
+                        $newTableroJugadorArr = Controlador::strToArray($newTableroJugador);
+                        $partida->setTableroJugador($newTableroJugadorArr);
+
+                        // Destapo la casilla que ha elegido el usuario
+                        $newTableroJugadorArr = $partida->destaparPista($data['Casilla']);
+
+                        // Convierto los tableros de array a string
+                        $newTableroJugadorStr = Controlador::arrayToStr($newTableroJugadorArr);
+
+                        if (Controlador::checkFinalizado($partida) == true) {
+                            // Cambia el estado de finalizado a la partida
+                            Controlador::updateFin(1, $partida->getIdPartida());
+                            // Le suma 1 a las partidas jugadas por el usuario 
+                            Controlador_Usuario::incrementarPartJugadas($data[0]->getPartidasJugadas() + 1, $partida->getIdUsuario());
+                        } else {
+                            Controlador::updateTablero($newTableroJugadorStr, $partida->getIdPartida());
+                        }
+                    }
                 } else {
                     $msgError = [
                         'Cod:' => 401,
