@@ -208,6 +208,7 @@ if ($requestMethod == 'POST') {
                     print_r($newTableroJugadorStr);
 
                     if (Controlador::checkFinalizado($partida) == true) {
+                        // Cambia el estado de finalizado a la partida
                         Controlador::updateFin(1, $partida->getIdPartida());
                         // Le suma 1 a las partidas jugadas por el usuario 
                         Controlador_Usuario::incrementarPartJugadas($data[0] -> getPartidasJugadas() + 1 ,$partida->getIdUsuario());

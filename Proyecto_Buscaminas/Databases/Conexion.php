@@ -128,7 +128,7 @@ class Conexion
             $finalizado = $partida->getFinalizado();
 
             $stmt->bind_param(
-                "ssb",
+                "ssi",
                 $tableroOculto,
                 $tableroJugador,
                 $finalizado
@@ -246,7 +246,7 @@ class Conexion
             $stmt = self::$conexion->prepare($query);
 
             $stmt->bind_param(
-                "bi",
+                "ii",
                 $fin,
                 $idPart
             );
@@ -411,7 +411,7 @@ class Conexion
             $adm = $persona->getAdmin();
 
             $stmt->bind_param(
-                "sssiib",
+                "sssiii",
                 $pass,
                 $nom,
                 $em,
