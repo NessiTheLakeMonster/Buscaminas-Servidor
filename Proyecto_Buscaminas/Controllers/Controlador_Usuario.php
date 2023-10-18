@@ -7,10 +7,11 @@ class Controlador_Usuario
 {
     static function crearUsuario($pers)
     {
-        if (Conexion::insertarPersona($pers)) {
+        if ($persona = Conexion::insertarPersona($pers)) {
             $insercion = true;
             $cod = 201;
             $mes = "TODO OK";
+
         } else {
             $insercion = false;
             $cod = 400;
@@ -21,7 +22,8 @@ class Controlador_Usuario
         $respuesta = [
             'Cod:' => $cod,
             'Mensaje:' => $mes,
-            'Insercion:' => $insercion
+            'Insercion:' => $insercion,
+            'Personas' => $persona
         ];
 
         echo json_encode($respuesta);

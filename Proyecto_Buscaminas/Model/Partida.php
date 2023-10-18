@@ -148,7 +148,7 @@ class Partida
     {
         $ganar = false;
 
-        // Cuenta las casiilas destapadas
+        // Cuenta las casillas destapadas
         $casillaDestapada = 0;
         for ($i = 0; $i < count($tabJ); $i++) {
             if ($tabJ[$i] !== null && $tabJ[$i] !== '-') {
