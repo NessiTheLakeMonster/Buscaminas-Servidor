@@ -16,30 +16,6 @@ $datosRecibidos = file_get_contents("php://input");
 $argus = explode('/', $paths);
 unset($argus[0]);
 
-/* $p = Conexion::seleccionarPartida(18);
-print_r($p);
-$tab = $p->getTableroJugador();
-print_r($tab);
-$tab2 = $p->getTableroOculto();
-print_r($tab2);
-
-$tabArr = Controlador::strToArray($tab);
-$p->setTableroJugador($tabArr);
-print_r($tabArr);
-
-$tabArr2 = Controlador::strToArray($tab2);
-$p->setTableroOculto($tabArr2);
-print_r($tabArr2);
-
-$new = $p->destaparPista(3);
-print_r(count($new));
-$p->setTableroJugador($new);
-print_r($new);
-
-$tabStr = Controlador::arrayToStr($new);
-print_r($tabStr); */
-
-
 // Métodos con el verbo GET
 if ($requestMethod == 'GET') {
     // Función GET para los administradores
@@ -85,20 +61,30 @@ if ($requestMethod == 'GET') {
         if ($data[0] !== null) {
             // Usuario elige el tamaño y las minas de su tablero
             if (is_numeric($argus[2]) && is_numeric($argus[3])) {
-                $tabO = $p->inicializarTableroOculto($argus[2], $argus[3]);
-                $tabO_str = Controlador::arrayToStr($tabO);
-                $tabJ = $p->inicializarTableroJugador($argus[2]);
-                $tabJ_str = Controlador::arrayToStr($tabJ);
+                if ($argus[3] > $argus[2]) {
+                    $tabO = $p->inicializarTableroOculto($argus[2], $argus[3]);
+                    $tabO_str = Controlador::arrayToStr($tabO);
+                    $tabJ = $p->inicializarTableroJugador($argus[2]);
+                    $tabJ_str = Controlador::arrayToStr($tabJ);
 
-                $p = Controlador::crearPartida(
-                    Factoria::crearPartida(
-                        ['idPartida'],
-                        $data[0]->getIdUsuario(),
-                        $tabO_str,
-                        $tabJ_str,
-                        false
-                    )
-                );
+                    $p = Controlador::crearPartida(
+                        Factoria::crearPartida(
+                            ['idPartida'],
+                            $data[0]->getIdUsuario(),
+                            $tabO_str,
+                            $tabJ_str,
+                            false
+                        )
+                    );
+                } else {
+                    $msgError = [
+                        'Cod:' => 406,
+                        'Mensaje:' => "El número de minas no puede ser mayor que el número de casillas"
+                    ];
+
+                    header(Constantes::$headerMssg . $msgError['Cod:'] . ' ' . $msgError['Mensaje:']);
+                    echo json_encode($msgError);
+                }
 
                 // El tablero se crea por defecto con 10 casillas y 2 minas (por defecto)
             } else if ($argus[2] == null && $argus[3] == null) {
@@ -140,6 +126,8 @@ if ($requestMethod == 'POST') {
             $data['password']
         );
 
+        print_r($data);
+
         if (Controlador::checkAdmin($data[0]) == true && $data[0] !== null) {
             $data[1] = Controlador_Usuario::crearUsuario(
                 Factoria::crearPersona(
@@ -152,6 +140,7 @@ if ($requestMethod == 'POST') {
                     $data['Personas']['admin']
                 )
             );
+
         } else {
             $msgError = [
                 'Cod:' => 401,
@@ -211,7 +200,7 @@ if ($requestMethod == 'POST') {
 
                             header(Constantes::$headerMssg . $msgError['Cod:'] . ' ' . $msgError['Mensaje:']);
                             echo json_encode($msgError);
-                        } 
+                        }
 
                         // Convierto los tableros de string a array
                         $newTableroOculto = $partida->getTableroOculto();
@@ -250,6 +239,7 @@ if ($requestMethod == 'POST') {
                             }
 
                             if ($partida->comprobarVictoria($newTableroOcultoArr, $newTableroJugadorArr) == true) {
+                                // Cambia el estado de finalizado a la partida
                                 Controlador::updateFin(1, $partida->getIdPartida());
                                 // Le suma 1 a las partidas ganadas por el usuario 
                                 Controlador_Usuario::incrementarPartGanadas($data[0]->getPartidasGanadas() + 1, $partida->getIdUsuario());

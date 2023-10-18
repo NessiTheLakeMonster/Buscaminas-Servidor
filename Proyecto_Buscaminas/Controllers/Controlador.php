@@ -172,7 +172,7 @@ class Controlador
     {
         $admin = false;
 
-        if ($persona->getAdmin() == 0) {
+        if ($persona->getAdmin() == 1) {
             $admin = true;
         } else {
             $admin = false;
