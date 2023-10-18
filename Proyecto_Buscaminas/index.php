@@ -78,8 +78,9 @@ if ($requestMethod == 'GET') {
             $data['password']
         );
 
-        $data[2] = $p;
         $p = new Partida(1, 1, 1, 1, 1);
+        $data[2] = $p;
+        
 
         if ($data[0] !== null) {
             // Usuario elige el tamaño y las minas de su tablero
@@ -95,7 +96,7 @@ if ($requestMethod == 'GET') {
                         $data[0]->getIdUsuario(),
                         $tabO_str,
                         $tabJ_str,
-                        1
+                        false
                     )
                 );
 
@@ -112,7 +113,7 @@ if ($requestMethod == 'GET') {
                         $data[0]->getIdUsuario(),
                         $tabO_str,
                         $tabJ_str,
-                        1
+                        false
                     )
                 );
             }

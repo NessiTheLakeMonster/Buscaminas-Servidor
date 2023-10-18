@@ -123,12 +123,14 @@ class Conexion
             $query = Constantes::$insertPartida;
             $stmt = self::$conexion->prepare($query);
 
+            $idUsuario = $partida->getIdUsuario();
             $tableroOculto = $partida->getTableroOculto();
             $tableroJugador = $partida->getTableroJugador();
             $finalizado = $partida->getFinalizado();
 
             $stmt->bind_param(
-                "ssi",
+                "issi",
+                $idUsuario,
                 $tableroOculto,
                 $tableroJugador,
                 $finalizado
