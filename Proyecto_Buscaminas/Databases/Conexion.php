@@ -525,4 +525,45 @@ class Conexion
         self::desconectar();
         return $correcto;
     }
+
+    /* ---------------------- FUNCIONES DE RANKING ------------------------------------ */
+
+    public static function selectPersonasRanking()
+    {
+        self::conectar();
+
+        if (!self::$conexion) {
+            echo 'Error al conectar a MySQL';
+        } else {
+            $query = Constantes::$ranking;
+            $stmt = self::$conexion->prepare($query);
+
+            try {
+                $stmt->execute();
+                $result = $stmt->get_result();
+
+                $usuarios = [];
+
+                while ($fila = $result->fetch_array()) {
+                    $p = Factoria::crearPersona(
+                        $fila['idUsuario'],
+                        $fila['password'],
+                        $fila['nombre'],
+                        $fila['email'],
+                        $fila['partidasJugadas'],
+                        $fila['partidasGanadas'],
+                        $fila['admin']
+                    );
+                    $usuarios[] = $p;
+                }
+
+                $result->free_result();
+                return $usuarios;
+            } catch (Exception $e) {
+                echo 'No se pudo selecionar' . $e->getMessage();
+            }
+        }
+
+        self::desconectar();
+    }
 }
