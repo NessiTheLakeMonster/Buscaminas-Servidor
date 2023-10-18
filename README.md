@@ -3,6 +3,10 @@
 
 <a href="https://www.php.net" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/php/php-original.svg" alt="php" width="40" height="40"/> </a> 
  Desafío de Buscaminas realizado durante la asignatura de Desarrollo Web Entorno Servidor
+ 
+ + Proyecto realizado por [Inés María Barrera Llerena](https://github.com/NessiTheLakeMonster)
+
+****
 
 # Manual para el usuario :computer:
 
@@ -11,22 +15,111 @@ Para lanzar el servidor bastará con el siguiente comando
 php -S 127.0.0.1:9090  
 ```
 
-### _Rutas que se van a utilizar_
+### Creación de la partida
++ Ruta para partida personalizada -> ``http://ip:puerto/jugar/[Nº casillas]/[Nº de minas]`` con el verbo ``GET``
++ Ruta para partida por defecto -> ``http://ip:puerto/jugar/`` con el verbo ``GET``
 
-+ Creación de partidas
-+ Creación de usuarios
-+ Iniciar sesión con tu usuario
+Por defecto creará un tablero de 10 casillas con 2 minas.
 
-#### Archivo JSON
-```json
+Siempre se deberá iniciar sesión antes de crear la partida
+```JSON
 {
-    "idUsuario" : 1,
-    "idParttida" : 101
+    "email" : "emailDefault@gmail.com",
+    "password" : "default123"
 }
 ```
 
+### Jugar una partida seleccionada
+
+Primeramente el usuario deberá entrar en una partida abierta y que además la partida le pertenezca.
++ Ruta -> ``http://ip:puerto/jugar/[idPartida]`` con el verbo ``POST``
+
+Además se debe añadir el JSON donde el usuario inicia sesión y además dice que casilla va a destapar.
+```JSON
+{
+    "email" : "emailDefault@gmail.com",
+    "password" : "default123",
+    "Casilla" : [numero de casilla que quieras destapar]
+}
+```
+
+En caso de querer ser un cagao y rendirse, se deberá modificar la ruta 
++ Ruta -> ``http://ip:puerto/jugar/[idPartida]/rendirse`` con el verbo ``POST``
+
+### Ver el ranking de las personas que han jugado
++ Ruta -> ``http://ip:puerto/ranking`` con el verbo ``GET``
+
 ****
 # Manual para el administrador :closed_lock_with_key:
+
+Para realizar las gestiones en modo administrador hay que iniciar sesión obligatoriamente en cada operación que se quiera realizar.
+### Iniciar sesión
+
+```JSON
+{
+    "email" : "emailDefault@gmail.com",
+    "password" : "default123"
+}
+```
+
+### Agregar usuarios
++ Ruta -> ``http://ip:puerto/admin`` con el verbo ``POST``
+
+Estructura que se debe seguir para añadir un usuario a la base de datos
+```JSON
+{
+  "email": "default@email.com",
+  "password": "ines12",
+  "Personas": {
+    "idUsuario": "",
+    "password": "testpassword",
+    "nombre": "Test User",
+    "email": "test@example.com",
+    "partidasJugadas": 10,
+    "partidasGanadas": 5,
+    "admin": false
+  }
+}
+```
+
+### Listar usuarios
++ Ruta para listar todos los usuarios -> ``http://ip:puerto/admin/`` con el verbo ``GET``
++ Ruta para buscar un usuario concreto -> ``http://ip:puerto/admin/[idUsuario]`` con el verbo ``GET``
+
+Estructura que se debe seguir, como es ``GET`` solo hace falta iniciar sesión
+```JSON
+{
+    "email" : "emailDefault@gmail.com",
+    "password" : "default123"
+}
+```
+
+### Borrar usuarios
++ Ruta -> ``http://ip:puerto/admin/[idUsuario]`` con el verbo ``DELETE``
+
+Estructura que se debe seguir, en este caso con ``DELETE`` solo hace falta iniciar sesión
+```JSON
+{
+    "email" : "emailDefault@gmail.com",
+    "password" : "default123"
+}
+```
+
+### Modificar usuarios
++ Ruta -> ``http://ip:puerto/admin/[idUsuario]`` con el verbo ``PUT``
+  
+Estructura que se debe seguir, los dos primeros cambios es el usuario administrador que inicua sesión. Los demás campos pertencen a los datos que se van a actualizar del ususario el cual hemos especificado su ID en la ruta.
+```JSON
+{
+  "email": "default@email.com",
+  "password": "default123",
+  "New password": "newpassword",
+  "New nombre" : "nombrePrueba",
+  "New email" : "email@email.nose",
+  "New admin" : true
+}
+```
+***
 
 # Enunciado :books:
 
@@ -82,15 +175,3 @@ El jugador también podrá solicitar un cambio de contraseña, para ello debe pr
 
 Finalmente el jugador podrá solicitar el ranking de jugadores. Se le devolverá una lista de usuarios ordenada de mayor a menor de más ganadas a menos. De igual manera el verbo y la forma de solicitar el ranking depende del programador.
 
-------
-# Ejercicio buscaminas
-
-clase buscaminas
-iniciartablero()
-colocarminar(2)
-generarpista()
-
-
-
-verbo get para crear la partida
-verbo port se juega con el
